@@ -6,6 +6,7 @@ class ItemData {
   late String _date;  // 项目日期
   late String _itemName;  // 项目名称
   late String _parentId;  // 项目父id
+  late String _projectId;  // 项目id
   late String _ext;  // 项目扩展
 
   ItemData({
@@ -16,6 +17,7 @@ class ItemData {
     required String itemName,
     required String type,
     required String parentId,
+    required String projectId,
     required String ext
   }) {
     _id = id;
@@ -24,6 +26,7 @@ class ItemData {
     _date = date;
     _itemName = itemName;
     _type = type;
+    _projectId = projectId;
     _parentId = parentId;
     _ext = ext;
   }
@@ -36,6 +39,7 @@ class ItemData {
     _date = json['date'] ?? '';
     _itemName = json['itemName'] ?? '';
     _parentId = json['parentId'] ?? '';
+    _projectId = json['projectId'] ?? '';
     _ext = json['ext'] ?? '';
   }
 
@@ -47,6 +51,7 @@ class ItemData {
     String? date,
     String? itemName,
     String? parentId,
+    String? projectId,
     String? ext
   }) =>
       ItemData(
@@ -57,6 +62,7 @@ class ItemData {
           date: date ?? _date,
           itemName: itemName ?? _itemName,
           parentId: parentId ?? _parentId,
+          projectId: projectId ?? _projectId,
           ext: ext ?? _ext
       );
 
@@ -74,6 +80,8 @@ class ItemData {
 
   String get parentId => _parentId;
 
+  String get projectId => _projectId;
+
   String get ext => _ext;
 
   Map<String, dynamic> toJson() {
@@ -85,6 +93,7 @@ class ItemData {
     map['date'] = _date;
     map['itemName'] = _itemName;
     map['parentId'] = _parentId;
+    map['projectId'] = _projectId;
     map['ext'] = _ext;
     return map;
   }

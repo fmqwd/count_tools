@@ -64,4 +64,13 @@ class SubProjectDbHelper {
       whereArgs: [id],
     );
   }
+
+  Future<void> deleteByParent(String parentId) async {
+    final db = await _databaseHelper.database;
+    await db.delete(
+      'sub_project_data',
+      where: 'parentId = ?',
+      whereArgs: [parentId],
+    );
+  }
 }

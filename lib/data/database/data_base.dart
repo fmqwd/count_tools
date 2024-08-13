@@ -67,6 +67,7 @@ class DatabaseHelper {
         date TEXT NOT NULL,
         itemName TEXT NOT NULL,
         parentId TEXT NOT NULL,
+        projectId TEXT NOT NULL,
         ext TEXT
       )
     """);

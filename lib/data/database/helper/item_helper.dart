@@ -16,6 +16,7 @@ class ItemDBHelper {
         'date': data.date,
         'itemName': data.itemName,
         'parentId': data.parentId,
+        'projectId': data.projectId,
         'ext': data.ext,
       },
       conflictAlgorithm: ConflictAlgorithm.replace,
@@ -38,6 +39,16 @@ class ItemDBHelper {
     return List.generate(maps.length, (i) => ItemData.fromJson(maps[i]));
   }
 
+  Future<List<ItemData>> getByProject(String projectId) async {
+    final db = await _databaseHelper.database;
+    final List<Map<String, dynamic>> maps = await db.query(
+      'item_data',
+      where: 'projectId = ?',
+      whereArgs: [projectId],
+    );
+    return List.generate(maps.length, (i) => ItemData.fromJson(maps[i]));
+  }
+
   Future<void> update(ItemData data) async {
     final db = await _databaseHelper.database;
     await db.update(
@@ -49,6 +60,7 @@ class ItemDBHelper {
         'date': data.date,
         'itemName': data.itemName,
         'parentId': data.parentId,
+        'projectId': data.projectId,
         'ext': data.ext
       },
       where: 'id = ?',
@@ -62,6 +74,24 @@ class ItemDBHelper {
       'item_data',
       where: 'id = ?',
       whereArgs: [id],
+    );
+  }
+
+  Future<void> deleteByParent(String parentId) async {
+    final db = await _databaseHelper.database;
+    await db.delete(
+      'item_data',
+      where: 'parentId = ?',
+      whereArgs: [parentId],
+    );
+  }
+
+  Future<void> deleteByProject(String projectId) async {
+    final db = await _databaseHelper.database;
+    await db.delete(
+      'item_data',
+      where: 'projectId = ?',
+      whereArgs: [projectId],
     );
   }
 }
