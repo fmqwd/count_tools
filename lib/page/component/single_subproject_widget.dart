@@ -2,7 +2,7 @@ import 'package:count_tools/value/style/text_style.dart';
 import 'package:flutter/material.dart';
 
 //单个首页list的item
-class SingleItemWidget extends StatelessWidget {
+class SingleSubProjectWidget extends StatelessWidget {
   final double width; //宽度
   final String countPercent; //百分比
   final String countNum; //数量
@@ -11,7 +11,7 @@ class SingleItemWidget extends StatelessWidget {
   final Color textColor; //文字颜色
   final void Function() onClick;
 
-  const SingleItemWidget(
+  const SingleSubProjectWidget(
       {super.key,
       required this.width,
       required this.countPercent,

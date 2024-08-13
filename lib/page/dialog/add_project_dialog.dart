@@ -1,5 +1,6 @@
 import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/page/home_page/home_page_vm.dart';
+import 'package:count_tools/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,7 +30,7 @@ Widget buildAddProjectDialog(
         onPressed: () {
           Provider.of<HomePageViewModel>(context, listen: false).addProject(
               ProjectData(
-                  id: "",
+                  id: generateUniqueId(),
                   title: titleCon.text,
                   subTitle: subtitleCon.text,
                   count: "0",

@@ -1,6 +1,7 @@
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page_vm.dart';
+import 'package:count_tools/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -43,21 +44,19 @@ Widget buildAddItemDialog(
         child: const Text("确定"),
         onPressed: () {
           int num = int.parse(countCon.text);
-          for (int i = 0; i < num; i++) {
-            Provider.of<SubProjectInfoViewModel>(context, listen: false)
-                .addItem(
-              ItemData(
-                  id: "",
-                  price: priceCon.text,
-                  eventName: eventCon.text,
-                  date: dateCon.text,
-                  itemName: parentData.name,
-                  type: typeCon.text,
-                  parentId: parentData.id,
-                  projectId: projectId,
-                  ext: ""),
-            );
-          }
+          Provider.of<SubProjectInfoViewModel>(context, listen: false).addItems(
+              List.generate(
+                  num,
+                  (index) => ItemData(
+                      id: generateUniqueId(),
+                      price: priceCon.text,
+                      eventName: eventCon.text,
+                      date: dateCon.text,
+                      itemName: parentData.name,
+                      type: typeCon.text,
+                      parentId: parentData.id,
+                      projectId: projectId,
+                      ext: "")));
           Provider.of<SubProjectInfoViewModel>(context, listen: false)
               .updateSubProject(parentData);
           Navigator.of(dialogContext).pop();

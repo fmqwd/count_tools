@@ -10,6 +10,7 @@ class ProjectDBHelper {
     await db.insert(
       'project_data',
       {
+        'id': data.id,
         'title': data.title,
         'subTitle': data.subTitle,
         'count': data.count,

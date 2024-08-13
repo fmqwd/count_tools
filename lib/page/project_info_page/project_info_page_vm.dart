@@ -26,6 +26,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
 
   Future<void> loadSubProjects() async {
     _subProjects = await subProjectDbHelper.getByParent(parentId);
+    _subProjects = sortSubProjectData(_subProjects);
     _items = await itemDBHelper.getByProject(parentId);
     notifyListeners();
   }
@@ -58,8 +59,14 @@ class ProjectInfoViewModel extends ChangeNotifier {
     }
     int total = int.parse(count);
     int done = items.length;
-    return '${(done / total * 100).toStringAsFixed(2)}%';
+    return '${(total / done * 100).toStringAsFixed(2)}%';
   }
+
+  List<SubProjectData> sortSubProjectData(List<SubProjectData> subProject,
+          {bool isDesc = true}) =>
+      subProject.toList()
+        ..sort((a, b) => (int.parse(isDesc ? b.count : a.count))
+            .compareTo(int.parse(isDesc ? a.count : b.count)));
 
   pushToSubProjectPage(BuildContext context, SubProjectData data, String projectId) =>
       RouteUtils.pushAnim(context, SubProjectInfoPage(parentData: data, projectId: projectId));

@@ -2,6 +2,7 @@ import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/home_page/home_page_vm.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
+import 'package:count_tools/utils/data_utils.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -74,7 +75,7 @@ class AddSubProjectDialogState extends State<AddSubProjectDialog> {
             Provider.of<ProjectInfoViewModel>(widget.extContext, listen: false)
                 .addSubProject(
                     SubProjectData(
-                        id: "",
+                        id: generateUniqueId(),
                         name: nameCon.text,
                         count: "0",
                         countPre: "0.0%",

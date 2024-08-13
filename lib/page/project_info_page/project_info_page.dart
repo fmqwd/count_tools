@@ -1,5 +1,5 @@
 import 'package:count_tools/data/model/project_data.dart';
-import 'package:count_tools/page/component/singe_item_widget.dart';
+import 'package:count_tools/page/component/single_subproject_widget.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:count_tools/value/style/text_style.dart';
@@ -64,7 +64,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
               childAspectRatio:1,
             ),
             itemCount: model.subProjects.length,
-            itemBuilder: (context, index) => SingleItemWidget(
+            itemBuilder: (context, index) => SingleSubProjectWidget(
               width: MediaQuery.of(context).size.width / line,
               countPercent: model.getCountPercentage(model.subProjects[index].count),
               countNum: model.subProjects[index].count,
