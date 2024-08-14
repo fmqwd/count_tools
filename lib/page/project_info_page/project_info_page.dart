@@ -71,7 +71,8 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
               name: model.subProjects[index].name,
               color: parseColor(model.subProjects[index].color),
               textColor: parseColor(model.subProjects[index].textColor),
-              onClick: () => model.pushToSubProjectPage(context, model.subProjects[index],widget.parentData.id),
+              onClick: () => model.pushToSubProjectPage(context, model.subProjects[index], widget.parentData.id),
+              onLongClick: () => model.longClickSubProjectDialog(context, model.subProjects[index]),
             ),
           ),
         );

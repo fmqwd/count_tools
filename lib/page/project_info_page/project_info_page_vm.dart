@@ -5,6 +5,7 @@ import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_subproject_dialog.dart';
+import 'package:count_tools/page/dialog/long_click_subproject_dialog.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page.dart';
 import 'package:count_tools/utils/route_utils.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
 
   Future<void> deleteSubProject(String id) async {
     await subProjectDbHelper.delete(id);
+    await itemDBHelper.deleteByParent(id);
     await loadSubProjects();
   }
 
@@ -75,4 +77,10 @@ class ProjectInfoViewModel extends ChangeNotifier {
       context: context,
       builder: (BuildContext dialogContext) =>
           AddSubProjectDialog(extContext: context, parentData: data));
+
+  longClickSubProjectDialog(BuildContext context, SubProjectData data) =>
+      showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) =>
+              LongClickSubProjectDialog(extContext: context, data: data));
 }

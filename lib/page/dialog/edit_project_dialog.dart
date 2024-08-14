@@ -18,7 +18,7 @@ Widget buildEditProjectDialog(
           decoration: InputDecoration(hintText: data.title)),
       TextField(
           controller: subtitleCon,
-          decoration: InputDecoration(hintText: data.subTitle)),
+          decoration: InputDecoration(hintText: data.subTitle))
     ]),
     actions: [
       TextButton(
@@ -31,7 +31,7 @@ Widget buildEditProjectDialog(
               data.copyWith(title: titleCon.text, subTitle: subtitleCon.text),
             );
             Navigator.of(dialogContext).pop();
-          }),
+          })
     ],
   );
 }

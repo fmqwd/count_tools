@@ -54,10 +54,10 @@ class SubProjectData {
         name: name ?? _name,
         count: count ?? _count,
         countPre: countPre ?? _countPre,
-        color: _color,
-        textColor: _textColor,
-        parentId: _parentId,
-        ext: _ext,
+        color: color ?? _color,
+        textColor: textColor ?? _textColor,
+        parentId: parentId ?? _parentId,
+        ext: ext ?? _ext,
       );
 
   String get id => _id;

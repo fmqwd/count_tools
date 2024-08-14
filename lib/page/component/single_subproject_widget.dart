@@ -10,20 +10,24 @@ class SingleSubProjectWidget extends StatelessWidget {
   final Color color; //颜色
   final Color textColor; //文字颜色
   final void Function() onClick;
+  final void Function() onLongClick;
 
-  const SingleSubProjectWidget(
-      {super.key,
-      required this.width,
-      required this.countPercent,
-      required this.countNum,
-      required this.name,
-      required this.color,
-      required this.textColor,
-      required this.onClick});
+  const SingleSubProjectWidget({
+    super.key,
+    required this.width,
+    required this.countPercent,
+    required this.countNum,
+    required this.name,
+    required this.color,
+    required this.textColor,
+    required this.onClick,
+    required this.onLongClick,
+  });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: () => onClick(),
+        onLongPress: () => onLongClick(),
         child: Container(
           width: width,
           margin: const EdgeInsets.symmetric(horizontal: 3, vertical: 6),

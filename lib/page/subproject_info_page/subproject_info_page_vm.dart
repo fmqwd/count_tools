@@ -49,13 +49,9 @@ class SubProjectInfoViewModel extends ChangeNotifier {
     await subProjectDbHelper.update(dataUpdate);
   }
 
-  addItemDialog(
-    BuildContext context,
-    SubProjectData parentData,
-    String projectId,
-  ) =>
+  addItemDialog(BuildContext context, SubProjectData data, String id) =>
       showDialog(
           context: context,
-          builder: (BuildContext dialogContext) => buildAddItemDialog(
-              context, dialogContext, parentData, projectId));
+          builder: (BuildContext dialogContext) =>
+              buildAddItemDialog(context, dialogContext, data, id));
 }
