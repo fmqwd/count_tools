@@ -19,6 +19,12 @@ class AppTextStyle {
     color: Colors.black,
   );
 
+  static const TextStyle bodyBig = TextStyle(
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
+    color: Colors.black,
+  );
+
   static const TextStyle bodyBd = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w500,
