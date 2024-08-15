@@ -49,4 +49,33 @@ class SettingUtils {
         return Colors.red;
     }
   }
+
+  static Future<void> setThemeColor(String color) async {
+    await SharedUtils.setString("themeColor", color);
+  }
+
+  static Future<Widget> getThemeColorWidget() async =>
+      _getThemeColorWidget(await getThemeColor());
+
+  static Widget _getThemeColorWidget(MaterialColor color) => Container(
+        width: 50,
+        height: 50,
+        decoration: BoxDecoration(
+            color: color, borderRadius: BorderRadius.circular(10)),
+      );
 }
+
+Widget getThemeColorWidget() => FutureBuilder<Widget>(
+  future: SettingUtils.getThemeColorWidget(),
+  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+      return const CircularProgressIndicator();
+    } else if (snapshot.hasError) {
+      return Container();
+    } else if (snapshot.hasData) {
+      return snapshot.data!;
+    } else {
+      return Container();
+    }
+  },
+);
