@@ -14,8 +14,29 @@ class VersionUpdateChecker {
   Future<void> checkForUpdates() async {
     const versionCheckUrl = AppUrl.updateUrl;
     final currentVersion = AppInfo.appVersion;
+
+    // 显示 loading 对话框
+    final loadingDialog = showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return AlertDialog(
+          content: Row(
+            children: [
+              CircularProgressIndicator(),
+              SizedBox(width: 20),
+              Text("检查更新..."),
+            ],
+          ),
+        );
+      },
+    );
+
     try {
       final response = await get(Uri.parse(versionCheckUrl));
+      // 关闭 loading 对话框
+      Navigator.of(context).pop(); // 这里将关闭 loading 对话框
+
       if (response.statusCode == 200) {
         final jsonBody = utf8.decode(response.bodyBytes);
         final data = json.decode(jsonBody);
@@ -28,10 +49,37 @@ class VersionUpdateChecker {
         } else {
           _showUnUpdateDialog();
         }
+      } else {
+        // 处理请求错误
+        _showErrorDialog("更新检查失败，请稍后再试。");
       }
     } catch (e) {
+      // 关闭 loading 对话框
+      Navigator.of(context).pop();
       Log.e('VersionUpdateChecker', 'Error checking for updates: $e');
+      // 处理异常情况
+      _showErrorDialog("网络异常，请检查连接");
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('错误'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('我知道了'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   bool isNewVersionAvailable(String current, String newVersion) {
