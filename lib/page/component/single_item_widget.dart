@@ -6,19 +6,17 @@ class SingleItemWidget extends StatelessWidget {
   final String date;
   final List<ItemData> data;
 
-  const SingleItemWidget({Key? key, required this.date, required this.data}) : super(key: key);
+  const SingleItemWidget({Key? key, required this.date, required this.data})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Column(
-        children: [
-          _buildTitle(),
-          _buildCountList(),
-        ],
-      ),
-    );
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+        child: GestureDetector(
+          child: Column(children: [_buildTitle(), _buildCountList()]),
+          onTap: () {},
+        ));
   }
 
   Widget _buildTitle() => Container(

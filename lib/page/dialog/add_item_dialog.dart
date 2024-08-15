@@ -43,7 +43,21 @@ Widget buildAddItemDialog(
       TextButton(
         child: const Text("确定"),
         onPressed: () {
-          int num = int.parse(countCon.text);
+          // 验证输入
+          if (dateCon.text.isEmpty || countCon.text.isEmpty) {
+            _showErrorDialog(dialogContext, "日期和张数是必填项。");
+            return;
+          }
+
+          // 尝试解析张数，如果失败，显示错误信息
+          int num;
+          try {
+            num = int.parse(countCon.text);
+          } catch (e) {
+            _showErrorDialog(dialogContext, "张数必须是数字。");
+            return;
+          }
+
           Provider.of<SubProjectInfoViewModel>(context, listen: false).addItems(
               List.generate(
                   num,
@@ -63,5 +77,22 @@ Widget buildAddItemDialog(
         },
       ),
     ],
+  );
+}
+
+// 错误提示对话框
+void _showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text("错误"),
+      content: Text(message),
+      actions: [
+        TextButton(
+          child: const Text("确定"),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+      ],
+    ),
   );
 }
