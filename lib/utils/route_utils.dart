@@ -1,4 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import 'log.dart';
 
 // 路由相关的工具类
 class RouteUtils {
@@ -64,5 +68,15 @@ class RouteUtils {
         replace: replace,
         removeUntil: removeUntil,
         predicate: predicate);
+  }
+
+  /// 打开URL
+  static Future<void> launchURL(String url) async {
+    try {
+      final Uri uri = Uri.parse(url);
+      await launchUrl(uri);
+    } catch (e) {
+      Log.e('RouteUtils', 'Error launching URL: $e');
+    }
   }
 }
