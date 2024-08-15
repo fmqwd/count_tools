@@ -63,6 +63,11 @@ class SettingUtils {
         decoration: BoxDecoration(
             color: color, borderRadius: BorderRadius.circular(10)),
       );
+
+  //设置全局theme颜色
+  static Future<void> setThemeColorWidget(MaterialColor color) async {
+    await SharedUtils.setString("themeColor", color.value.toString());
+  }
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(

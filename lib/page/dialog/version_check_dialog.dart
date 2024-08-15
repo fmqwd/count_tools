@@ -16,13 +16,13 @@ class VersionUpdateChecker {
     final currentVersion = AppInfo.appVersion;
 
     // 显示 loading 对话框
-    final loadingDialog = showDialog(
+    showDialog(
       context: context,
       barrierDismissible: false,
       builder: (context) {
         return AlertDialog(
           content: Row(
-            children: [
+            children: const [
               CircularProgressIndicator(),
               SizedBox(width: 20),
               Text("检查更新..."),
@@ -34,8 +34,8 @@ class VersionUpdateChecker {
 
     try {
       final response = await get(Uri.parse(versionCheckUrl));
-      // 关闭 loading 对话框
-      Navigator.of(context).pop(); // 这里将关闭 loading 对话框
+      Navigator.of(context).pop();
+
 
       if (response.statusCode == 200) {
         final jsonBody = utf8.decode(response.bodyBytes);

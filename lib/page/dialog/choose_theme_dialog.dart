@@ -2,7 +2,9 @@ import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 class ColorPickerDialog extends StatelessWidget {
-  const ColorPickerDialog({super.key});
+  final ValueChanged<bool> onColorChanged;
+
+  const ColorPickerDialog({super.key, required this.onColorChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,6 @@ class ColorPickerDialog extends StatelessWidget {
 
     return AlertDialog(
       title: const Text('主题颜色选择'),
-      // 添加 subtitle
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,7 +73,8 @@ class ColorPickerDialog extends StatelessWidget {
               itemBuilder: (context, index) => GestureDetector(
                 onTap: () {
                   SettingUtils.setThemeColor(colorStr[index]);
-                  Navigator.of(context).pop(colorStr[index]);
+                  onColorChanged(true);
+                  Navigator.of(context).pop();
                 },
                 child: Container(
                   margin: const EdgeInsets.all(4.0),
@@ -90,15 +92,18 @@ class ColorPickerDialog extends StatelessWidget {
       actions: [
         TextButton(
           child: const Text('取消'),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: () {
+            onColorChanged(false);
+            Navigator.of(context).pop();
+          },
         ),
       ],
     );
   }
 }
 
-void showThemePicker(BuildContext context) =>
+void showThemePicker(BuildContext context, ValueChanged<bool> onColorChanged) =>
     showDialog(
       context: context,
-      builder: (context) => const ColorPickerDialog(),
+      builder: (context) => ColorPickerDialog(onColorChanged: onColorChanged),
     );

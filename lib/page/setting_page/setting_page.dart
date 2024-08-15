@@ -50,7 +50,13 @@ class _SettingPageState extends State<SettingPage> {
         const SizedBox(width: 8),
         const Icon(Icons.arrow_forward_ios_rounded, size: 16)
       ]),
-      () => showThemePicker(context));
+      () => showThemePicker(context, (bool isChange)  {
+        if (isChange) {
+          setState(() {
+
+          });
+        }
+      }));
 
   //关于
   Widget _buildAbout() => _buildSettingLine(
