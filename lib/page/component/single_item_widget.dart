@@ -15,7 +15,7 @@ class SingleItemWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         child: GestureDetector(
           child: Column(children: [_buildTitle(), _buildCountList()]),
-          onTap: () {},
+          onLongPress: () {},
         ));
   }
 

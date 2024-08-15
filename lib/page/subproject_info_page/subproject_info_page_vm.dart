@@ -38,6 +38,11 @@ class SubProjectInfoViewModel extends ChangeNotifier {
     await loadItems(data.parentId);
   }
 
+  Future<void> editItems(List<ItemData> datas) async {
+    await itemDBHelper.updateAll(datas);
+    await loadItems(datas.first.parentId);
+  }
+
   Future<void> deleteItem(String id) async {
     await itemDBHelper.delete(id);
     await loadItems(id);

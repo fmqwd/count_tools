@@ -92,6 +92,29 @@ class ItemDBHelper {
     );
   }
 
+  Future<void> updateAll(List<ItemData> data) async {
+    final db = await _databaseHelper.database;
+    await db.transaction((txn) async {
+      for (var item in data) {
+        await txn.update(
+          'item_data',
+          {
+            'price': item.price,
+            'eventName': item.eventName,
+            'type': item.type,
+            'date': item.date,
+            'itemName': item.itemName,
+            'parentId': item.parentId,
+            'projectId': item.projectId,
+            'ext': item.ext
+          },
+          where: 'id = ?',
+          whereArgs: [item.id],
+        );
+      }
+    });
+  }
+
   Future<void> delete(String id) async {
     final db = await _databaseHelper.database;
     await db.delete(

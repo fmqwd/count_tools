@@ -43,13 +43,10 @@ Widget buildAddItemDialog(
       TextButton(
         child: const Text("确定"),
         onPressed: () {
-          // 验证输入
           if (dateCon.text.isEmpty || countCon.text.isEmpty) {
             _showErrorDialog(dialogContext, "日期和张数是必填项。");
             return;
           }
-
-          // 尝试解析张数，如果失败，显示错误信息
           int num;
           try {
             num = int.parse(countCon.text);

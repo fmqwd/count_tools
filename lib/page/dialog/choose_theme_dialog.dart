@@ -53,57 +53,49 @@ class ColorPickerDialog extends StatelessWidget {
     ];
 
     return AlertDialog(
-      title: const Text('主题颜色选择'),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('请选择您喜欢的主题颜色\n选择后需退出app重进才能生效'),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: 300,
-            height: 400,
-            child: GridView.builder(
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1,
-              ),
-              itemCount: colors.length,
-              itemBuilder: (context, index) => GestureDetector(
-                onTap: () {
-                  SettingUtils.setThemeColor(colorStr[index]);
-                  onColorChanged(true);
-                  Navigator.of(context).pop();
-                },
-                child: Container(
-                  margin: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    color: colors[index],
-                    borderRadius: BorderRadius.circular(8.0),
-                    border: Border.all(color: Colors.black, width: 1.0),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-      actions: [
-        TextButton(
-          child: const Text('取消'),
-          onPressed: () {
-            onColorChanged(false);
-            Navigator.of(context).pop();
-          },
-        ),
-      ],
-    );
+        title: const Text('主题颜色选择'),
+        content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('请选择您喜欢的主题颜色\n选择后需退出app重进才能生效'),
+              const SizedBox(height: 16),
+              SizedBox(
+                  width: 300,
+                  height: 400,
+                  child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 4, childAspectRatio: 1),
+                      itemCount: colors.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                          onTap: () {
+                            SettingUtils.setThemeColor(colorStr[index]);
+                            onColorChanged(true);
+                            Navigator.of(context).pop();
+                          },
+                          child: Container(
+                              margin: const EdgeInsets.all(4.0),
+                              decoration: BoxDecoration(
+                                  color: colors[index],
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  border: Border.all(
+                                      color: Colors.black, width: 1.0))))))
+            ]),
+        actions: [
+          TextButton(
+              child: const Text('取消'),
+              onPressed: () {
+                onColorChanged(false);
+                Navigator.of(context).pop();
+              })
+        ]);
   }
 }
 
 void showThemePicker(BuildContext context, ValueChanged<bool> onColorChanged) =>
     showDialog(
-      context: context,
-      builder: (context) => ColorPickerDialog(onColorChanged: onColorChanged),
-    );
+        context: context,
+        builder: (context) =>
+            ColorPickerDialog(onColorChanged: onColorChanged));
