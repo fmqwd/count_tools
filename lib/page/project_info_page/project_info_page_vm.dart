@@ -8,6 +8,7 @@ import 'package:count_tools/page/dialog/add_subproject_dialog.dart';
 import 'package:count_tools/page/dialog/long_click_subproject_dialog.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page.dart';
 import 'package:count_tools/utils/route_utils.dart';
+import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 class ProjectInfoViewModel extends ChangeNotifier {
@@ -28,12 +29,21 @@ class ProjectInfoViewModel extends ChangeNotifier {
   bool _isDesc = true;
   bool get isDesc => _isDesc;
 
-  void setIsDesc(bool isDesc) => _isDesc = isDesc;
+  void setIsDesc() async {
+    String sort = await SettingUtils.getProjectInfoSort();
+    if (sort == '升序') {
+      _isDesc = false;
+    } else {
+      _isDesc = true;
+    }
+    _isDesc = isDesc;
+  }
 
   Future<void> loadSubProjects() async {
     _subProjects = await subProjectDbHelper.getByParent(parentId);
     _subProjects = sortSubProjectData(_subProjects);
     _items = await itemDBHelper.getByProject(parentId);
+    setIsDesc();
     notifyListeners();
   }
 
