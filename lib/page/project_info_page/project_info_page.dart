@@ -1,5 +1,6 @@
 import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/page/component/single_subproject_widget.dart';
+import 'package:count_tools/page/dialog/project_info_setting_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:count_tools/value/style/text_style.dart';
@@ -8,8 +9,17 @@ import 'package:provider/provider.dart';
 
 class ProjectInfoPage extends StatefulWidget {
   final ProjectData parentData;
+  final int row;
+  final String order;
+  final String criteria;
 
-  const ProjectInfoPage({Key? key, required this.parentData}) : super(key: key);
+  const ProjectInfoPage(
+      {Key? key,
+      required this.parentData,
+      required this.row,
+      required this.order,
+      required this.criteria})
+      : super(key: key);
 
   @override
   State<ProjectInfoPage> createState() => _ProjectInfoPageState();
@@ -20,7 +30,11 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
   Widget build(BuildContext context) => ChangeNotifierProvider(
         create: (context) => ProjectInfoViewModel(widget.parentData.id)..loadSubProjects(),
         child: Scaffold(
-            appBar: AppBar(title: Text(widget.parentData.title)),
+            appBar: AppBar(title: Text(widget.parentData.title), actions: [
+              IconButton(
+                  icon: const Icon(Icons.settings),
+                  onPressed: () => showProjectInfoSettingDialog(context)),
+            ]),
             body: Center(child: _buildProjectInfoContent()),
             floatingActionButton: Builder(
               builder: (context) => FloatingActionButton(
@@ -33,7 +47,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
 
   Widget _buildProjectInfoContent() => Column(children: [
         _buildProjectInfoTitle(),
-        Expanded(child: _buildProjectInfoList())
+        Expanded(child: _buildProjectInfoList(line:widget.row)),
       ]);
 
   Widget _buildProjectInfoTitle() => Container(
@@ -48,7 +62,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
         ),
       );
 
-  Widget _buildProjectInfoList({int line = 5}) => Container(
+  Widget _buildProjectInfoList({int line = 4}) => Container(
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       child: Consumer<ProjectInfoViewModel>(builder: (context, model, child) {
         if (model.subProjects.isEmpty) {

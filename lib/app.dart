@@ -17,6 +17,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+    _initApp();
     _loadThemeColor();
     _initializeDatabase();
   }
@@ -28,6 +29,15 @@ class AppState extends State<App> {
 
   Future<void> _initializeDatabase() async {
     DatabaseHelper();
+  }
+
+  Future<void> _initApp() async {
+    if (!await SettingUtils.isNotFirstEnter()) {
+      await SettingUtils.setIsNotFirstEnter();
+      SettingUtils.setProjectInfoRowNum(5);
+      SettingUtils.setProjectInfoSort('降序');
+      SettingUtils.setProjectInfoSortType('数量');
+    }
   }
 
   @override

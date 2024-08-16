@@ -18,7 +18,6 @@ class AppTextStyle {
     fontWeight: FontWeight.w500,
     color: Colors.black,
   );
-
   static const TextStyle bodyBig = TextStyle(
     fontSize: 20.0,
     fontWeight: FontWeight.w500,
@@ -67,4 +66,17 @@ class AppTextStyle {
     fontWeight: FontWeight.normal,
     color: Colors.red,
   );
+
+  static TextStyle customStyle({
+    double size = 20,
+    Color color = Colors.black,
+    FontWeight fontWeight = FontWeight.w500,
+  }) =>
+      TextStyle(
+        fontSize: size,
+        fontWeight: fontWeight,
+        color: color,
+      );
+
+  static TextStyle customSize(double size) => TextStyle(fontSize: size);
 }

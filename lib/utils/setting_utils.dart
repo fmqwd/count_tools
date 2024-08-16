@@ -68,19 +68,65 @@ class SettingUtils {
   static Future<void> setThemeColorWidget(MaterialColor color) async {
     await SharedUtils.setString("themeColor", color.value.toString());
   }
+
+  //获取projectInfo页面显示行数
+  static Future<int> getProjectInfoRowNum() async {
+    int rowNum = await SharedUtils.getInt("projectInfoRowNum");
+    return rowNum;
+  }
+
+  //设置projectInfo页面显示行数
+  static Future<void> setProjectInfoRowNum(int rowNum) async {
+    await SharedUtils.setInt("projectInfoRowNum", rowNum);
+  }
+
+  //设置projectInfo页面排序依据
+  static Future<void> setProjectInfoSort(String sort) async {
+    await SharedUtils.setString("projectInfoSort", sort);
+  }
+
+  //获取projectInfo页面排序依据
+  static Future<String> getProjectInfoSort() async {
+    return await SharedUtils.getString("projectInfoSort");
+  }
+
+  //设置projectInfo页面排序方式
+  static Future<void> setProjectInfoSortType(String sortType) async {
+    await SharedUtils.setString("projectInfoSortType", sortType);
+  }
+
+  //获取projectInfo页面排序方式
+  static Future<String> getProjectInfoSortType() async {
+    return await SharedUtils.getString("projectInfoSortType");
+  }
+
+  //设置projectInfo页面排序方式
+  static Future<void> setProjectInfoSortDirection(String sortDirection) async {
+    await SharedUtils.setString("projectInfoSortDirection", sortDirection);
+  }
+
+  //判断是否首次进入app
+  static Future<bool> isNotFirstEnter() async {
+    return await SharedUtils.getBool("isNotFirstEnter");
+  }
+
+  //设置首次进入app
+  static Future<void> setIsNotFirstEnter() async {
+    await SharedUtils.setBool("isNotFirstEnter", true);
+  }
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(
-  future: SettingUtils.getThemeColorWidget(),
-  builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-      return const CircularProgressIndicator();
-    } else if (snapshot.hasError) {
-      return Container();
-    } else if (snapshot.hasData) {
-      return snapshot.data!;
-    } else {
-      return Container();
-    }
-  },
-);
+      future: SettingUtils.getThemeColorWidget(),
+      builder: (BuildContext context, AsyncSnapshot<Widget> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Container();
+        } else if (snapshot.hasData) {
+          return snapshot.data!;
+        } else {
+          return Container();
+        }
+      },
+    );

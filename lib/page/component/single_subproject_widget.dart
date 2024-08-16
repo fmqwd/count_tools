@@ -38,22 +38,27 @@ class SingleSubProjectWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const SizedBox(height: 4),
-              Text(countNum.toString(), style: AppTextStyle.heading3),
-              const SizedBox(height: 2),
-              Text(countPercent),
+              SizedBox(height: (width / 8)),
+              Text(countNum.toString(),
+                  style: AppTextStyle.customStyle(size: width / 5)),
+              Expanded(child: Container()),
+              Text(countPercent, style: AppTextStyle.customSize(width / 7)),
               Expanded(child: Container()),
               Container(
                 alignment: Alignment.center,
                 width: double.infinity,
-                height: 20,
+                height: width / 5,
                 decoration: BoxDecoration(
                     color: color,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(12),
                       bottomRight: Radius.circular(12),
                     )),
-                child: Text(name, style: TextStyle(color: textColor)),
+                child: Text(name,
+                    style: AppTextStyle.customStyle(
+                        size: width / 7,
+                        color: textColor,
+                        fontWeight: FontWeight.normal)),
               ),
             ],
           ),

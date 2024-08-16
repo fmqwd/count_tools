@@ -8,6 +8,7 @@ import 'package:count_tools/page/dialog/edit_project_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page.dart';
 import 'package:count_tools/page/setting_page/setting_page.dart';
 import 'package:count_tools/utils/route_utils.dart';
+import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 class HomePageViewModel extends ChangeNotifier {
@@ -46,12 +47,22 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   // 跳转项目详情
-  pushProjectInfoPage(BuildContext context, ProjectData data) =>
-      RouteUtils.pushAnim(context, ProjectInfoPage(parentData: data));
+  pushProjectInfoPage(BuildContext context, ProjectData data) async {
+    int row = await SettingUtils.getProjectInfoRowNum();
+    String order = await SettingUtils.getProjectInfoSort();
+    String criteria = await SettingUtils.getProjectInfoSortType();
+    if (context.mounted) {
+      return RouteUtils.pushAnim(
+          context,
+          ProjectInfoPage(
+              parentData: data, row: row, order: order, criteria: criteria));
+    }
+  }
 
   // 跳转设置页
-  pushSetPage(BuildContext context) =>
-      RouteUtils.pushAnim(context, SettingPage());
+  pushSetPage(BuildContext context) {
+    return RouteUtils.pushAnim(context, const SettingPage());
+  }
 
   // 跳转添加项目弹窗
   addProjectDialog(BuildContext context) => showDialog(

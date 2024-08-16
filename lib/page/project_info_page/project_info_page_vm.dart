@@ -25,6 +25,11 @@ class ProjectInfoViewModel extends ChangeNotifier {
   List<ItemData> _items = [];
   List<ItemData> get items => _items;
 
+  bool _isDesc = true;
+  bool get isDesc => _isDesc;
+
+  void setIsDesc(bool isDesc) => _isDesc = isDesc;
+
   Future<void> loadSubProjects() async {
     _subProjects = await subProjectDbHelper.getByParent(parentId);
     _subProjects = sortSubProjectData(_subProjects);
@@ -64,8 +69,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
     return '${(total / done * 100).toStringAsFixed(2)}%';
   }
 
-  List<SubProjectData> sortSubProjectData(List<SubProjectData> subProject,
-          {bool isDesc = true}) =>
+  List<SubProjectData> sortSubProjectData(List<SubProjectData> subProject) =>
       subProject.toList()
         ..sort((a, b) => (int.parse(isDesc ? b.count : a.count))
             .compareTo(int.parse(isDesc ? a.count : b.count)));
@@ -83,4 +87,5 @@ class ProjectInfoViewModel extends ChangeNotifier {
           context: context,
           builder: (BuildContext dialogContext) =>
               LongClickSubProjectDialog(extContext: context, data: data));
+
 }
