@@ -1,4 +1,5 @@
 import 'package:count_tools/page/component/single_project_widget.dart';
+import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -41,10 +42,8 @@ class _HomePageState extends State<HomePage> {
           if (model.projects.isEmpty) {
             return const Center(child: Text('没有项目，点击+添加'));
           }
-          return MediaQuery.removePadding(
+          return NonePaddingWidget(
             context: context,
-            removeTop: true,
-            removeBottom: true,
             child: ListView.builder(
               itemCount: model.projects.length,
               itemBuilder: (context, index) => SingleProjectWidget(

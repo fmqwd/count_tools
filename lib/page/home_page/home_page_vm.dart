@@ -57,7 +57,6 @@ class HomePageViewModel extends ChangeNotifier {
           context,
           ProjectInfoPage(
               parentData: data,
-              row: row,
               order: order,
               criteria: criteria,
               showType: showType));

@@ -2,46 +2,43 @@ import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 void showProjectInfoSettingDialog(BuildContext context) async {
-  final int row = await SettingUtils.getProjectInfoRowNum();
-  final String order = await SettingUtils.getProjectInfoSort();
-  final String criteria = await SettingUtils.getProjectInfoSortType();
-  final String showType = await SettingUtils.getShowMode();
-
+  final settings = await _loadSettings();
   if (context.mounted) {
     showDialog(
         context: context,
-        builder: (dialogContext) =>
-            SettingDialog(row: row, order: order, criteria: criteria, showType: showType,));
+        builder: (dialogContext) => SettingDialog(initialSettings: settings));
   }
 }
 
-class SettingDialog extends StatefulWidget {
-  final int row;
-  final String order;
-  final String criteria;
-  final String showType;
+Future<Map<String, dynamic>> _loadSettings() async => {
+      'row': await SettingUtils.getProjectInfoRowNum(),
+      'order': await SettingUtils.getProjectInfoSort(),
+      'criteria': await SettingUtils.getProjectInfoSortType(),
+      'showType': await SettingUtils.getShowMode()
+    };
 
-  const SettingDialog({
-    super.key,
-    required this.row,
-    required this.order,
-    required this.criteria,
-    required this.showType,
-  });
+class SettingDialog extends StatefulWidget {
+  final Map<String, dynamic> initialSettings;
+
+  const SettingDialog({Key? key, required this.initialSettings}) : super(key: key);
 
   @override
   SettingDialogState createState() => SettingDialogState();
 }
 
 class SettingDialogState extends State<SettingDialog> {
-  int? selectedRowCount;
-  String? selectedOrder;
-  String? selectedCriteria;
-  String? selectedShowType;
-  List<int> rowCountOptions = [4, 5, 6];
-  List<String> orderOptions = ['升序', '降序'];
-  List<String> criteriaOptions = ['数量', '金额'];
-  List<String> showType = ['数量-百分比',"排名-百分比","排名-数量","仅排名","仅百分比","仅数量"];
+  final List<int> rowOptions = [4, 5, 6];
+  final List<String> orderOptions = ['升序', '降序'];
+  final List<String> criteriaOptions = ['数量', '金额'];
+  final List<String> displayOptions = ['数量-百分比', '排名-百分比', '排名-数量', '仅排名', '仅百分比', '仅数量'];
+
+  Map<String, dynamic> settings = {};
+
+  @override
+  void initState() {
+    super.initState();
+    settings = widget.initialSettings;
+  }
 
   @override
   Widget build(BuildContext context) => AlertDialog(
@@ -50,32 +47,31 @@ class SettingDialogState extends State<SettingDialog> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("行数"),
-                DropdownButton(
-                    value: selectedRowCount,
-                    hint: Text(widget.row.toString()),
-                    onChanged: (int? newValue) => setState(() {selectedRowCount = newValue;SettingUtils.setProjectInfoRowNum(newValue!);}),
-                    items: rowCountOptions.map((value) => DropdownMenuItem(value: value, child: Text(value.toString()))).toList()),
-                const Text("排序方式"),
-                DropdownButton(
-                    hint: Text(widget.order),
-                    value: selectedOrder,
-                    onChanged: (String? newValue) => setState(() {selectedOrder = newValue;SettingUtils.setProjectInfoSort(newValue!);}),
-                    items: orderOptions.map((String value) => DropdownMenuItem(value: value, child: Text(value))).toList()),
-                const Text("排序条件"),
-                DropdownButton(
-                  hint: Text(widget.criteria),
-                  value: selectedCriteria,
-                  onChanged: (String? newValue) => setState(() {selectedCriteria = newValue;SettingUtils.setProjectInfoSortType(newValue!);}),
-                  items: criteriaOptions.map((String value) => DropdownMenuItem(value: value, child: Text(value))).toList(),
-                ),
-                const Text("显示格式"),
-                DropdownButton(
-                  hint: Text(widget.showType),
-                  value:selectedShowType,
-                  onChanged: (String? newValue) => setState(() {selectedShowType = newValue;SettingUtils.setShowMode(newValue!);}),
-                  items: showType.map((String value) => DropdownMenuItem(value: value, child: Text(value))).toList(),
-                )
+                _buildDropdown('行数', 'row', rowOptions),
+                _buildDropdown('排序方式', 'order', orderOptions),
+                _buildDropdown('排序条件', 'criteria', criteriaOptions),
+                _buildDropdown('显示格式', 'showType', displayOptions)
               ]),
-          actions: [TextButton(child: const Text('取消'), onPressed: () => Navigator.of(context).pop())]);
+          actions: [
+            TextButton(child: const Text('取消'), onPressed: () => Navigator.of(context).pop()),
+            TextButton(child: const Text('确定'), onPressed: () => _saveSettings())
+          ]);
+
+  Widget _buildDropdown(String label, String key, List<dynamic> options) =>
+      Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        Text(label),
+        DropdownButtonFormField<dynamic>(
+            value: settings[key],
+            hint: Text(settings[key].toString()),
+            onChanged: (newValue) => setState(() => settings[key] = newValue),
+            items: options.map((value) => DropdownMenuItem(value: value, child: Text(value.toString()))).toList())
+      ]);
+
+  void _saveSettings() {
+    SettingUtils.setProjectInfoRowNum(settings['row']);
+    SettingUtils.setProjectInfoSort(settings['order']);
+    SettingUtils.setProjectInfoSortType(settings['criteria']);
+    SettingUtils.setShowMode(settings['showType']);
+    Navigator.of(context).pop();
+  }
 }

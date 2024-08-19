@@ -28,9 +28,11 @@ class ProjectInfoViewModel extends ChangeNotifier {
   List<ItemData> _items = [];
   List<ItemData> get items => _items;
 
-  //排名
   List<String> _ranking =[];
   List<String> get ranking => _ranking;
+
+  int _row = 5;
+  int get row => _row;
 
   bool _isDesc = true;
   bool get isDesc => _isDesc;
@@ -42,7 +44,6 @@ class ProjectInfoViewModel extends ChangeNotifier {
     } else {
       _isDesc = true;
     }
-    _isDesc = isDesc;
   }
 
   Future<void> loadSubProjects() async {
@@ -51,6 +52,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
     _items = await itemDBHelper.getByProject(parentId);
     setIsDesc();
     await loadRanking();
+    await loadRow();
     notifyListeners();
   }
 
@@ -59,20 +61,10 @@ class ProjectInfoViewModel extends ChangeNotifier {
     _ranking = getRanks(nums).map((e) => e.toString()).toList();
   }
 
-  List<int?> getRanks(List<int> numbers) {
-    final rankedMap = <int, int>{};
-    int rank = 1;
-    for (int i = 0; i < numbers.length; i++) {
-      if (i == 0 || numbers[i] != numbers[i - 1]) {
-        rankedMap[numbers[i]] = rank;
-        rank++;
-      } else {
-        rankedMap[numbers[i]] = rank - 1;
-      }
-    }
-    return numbers.map((number) => rankedMap[number]).toList();
+  Future<void> loadRow() async {
+    _row = await SettingUtils.getProjectInfoRowNum();
+    notifyListeners();
   }
-
 
   Future<void> addSubProject(data, parentData) async {
     await subProjectDbHelper.insert(data);
@@ -95,6 +87,20 @@ class ProjectInfoViewModel extends ChangeNotifier {
     await projectDBHelper.update(parentData.copyWith(
       count: (subProjects.length).toString(),
     ));
+  }
+
+  List<int?> getRanks(List<int> numbers) {
+    final rankedMap = <int, int>{};
+    int rank = 1;
+    for (int i = 0; i < numbers.length; i++) {
+      if (i == 0 || numbers[i] != numbers[i - 1]) {
+        rankedMap[numbers[i]] = rank;
+        rank++;
+      } else {
+        rankedMap[numbers[i]] = rank - 1;
+      }
+    }
+    return numbers.map((number) => rankedMap[number]).toList();
   }
 
   String getCountPercentage(String count) {
@@ -124,5 +130,4 @@ class ProjectInfoViewModel extends ChangeNotifier {
           context: context,
           builder: (BuildContext dialogContext) =>
               LongClickSubProjectDialog(extContext: context, data: data));
-
 }

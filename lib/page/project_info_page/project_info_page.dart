@@ -1,5 +1,7 @@
 import 'package:count_tools/data/model/project_data.dart';
+import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/component/single_subproject_widget.dart';
+import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:count_tools/page/dialog/project_info_setting_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/ui_utils.dart';
@@ -9,19 +11,17 @@ import 'package:provider/provider.dart';
 
 class ProjectInfoPage extends StatefulWidget {
   final ProjectData parentData;
-  final int row;
   final String order;
   final String showType;
   final String criteria;
 
-  const ProjectInfoPage(
-      {Key? key,
-      required this.parentData,
-      required this.row,
-      required this.order,
-      required this.showType,
-      required this.criteria})
-      : super(key: key);
+  const ProjectInfoPage({
+    Key? key,
+    required this.parentData,
+    required this.order,
+    required this.showType,
+    required this.criteria,
+  }) : super(key: key);
 
   @override
   State<ProjectInfoPage> createState() => _ProjectInfoPageState();
@@ -30,72 +30,79 @@ class ProjectInfoPage extends StatefulWidget {
 class _ProjectInfoPageState extends State<ProjectInfoPage> {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-        create: (context) => ProjectInfoViewModel(widget.parentData.id)..loadSubProjects(),
-        child: Scaffold(
-            appBar: AppBar(title: Text(widget.parentData.title), actions: [
-              IconButton(
-                  icon: const Icon(Icons.settings),
-                  onPressed: () => showProjectInfoSettingDialog(context)),
-            ]),
-            body: Center(child: _buildProjectInfoContent()),
-            floatingActionButton: Builder(
-              builder: (context) => FloatingActionButton(
-                onPressed: () => Provider.of<ProjectInfoViewModel>(context, listen: false).
-                addSubProjectDialog(context,widget.parentData),
-                child: const Icon(Icons.add),
-              ),
-            )),
-      );
+      create: (context) => ProjectInfoViewModel(widget.parentData.id)..loadSubProjects(),
+      child: Scaffold(
+        appBar: AppBar(title: Text(widget.parentData.title), actions: [_titleAction()]),
+        body: Center(child: _buildProjectInfoContent()),
+        floatingActionButton: _buildFloatButton(),
+      ));
+
+  Widget _titleAction() => IconButton(
+    icon: const Icon(Icons.settings),
+    onPressed: () => showProjectInfoSettingDialog(context),
+  );
+
+  Widget _buildFloatButton() => Builder(
+      builder: (context) => FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () =>
+                Provider.of<ProjectInfoViewModel>(context, listen: false)
+                    .addSubProjectDialog(context, widget.parentData),
+          ));
 
   Widget _buildProjectInfoContent() => Column(children: [
         _buildProjectInfoTitle(),
-        Expanded(child: _buildProjectInfoWidget(line:widget.row)),
+        Expanded(child: _buildProjectInfoWidget()),
       ]);
 
-  Widget _buildProjectInfoTitle() => Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        width: double.infinity,
-        alignment: Alignment.center,
-        child: Consumer<ProjectInfoViewModel>(
-          builder: (context, model, child) => Text(
+  Widget _buildProjectInfoTitle() => Consumer<ProjectInfoViewModel>(
+      builder: (context, model, child) => Container(
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          width: double.infinity,
+          alignment: Alignment.center,
+          child: Text(
             "当前项目总计${model.subProjects.length}项，${model.items.length}张",
             style: AppTextStyle.heading3,
+          )));
+
+  Widget _buildProjectInfoWidget() => Consumer<ProjectInfoViewModel>(
+      builder: (context, model, child) => Container(
+          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+          child: model.subProjects.isEmpty
+              ? const Center(child: Text('没有项目，点击+添加'))
+              : NonePaddingWidget(
+                  context: context,
+                  child: _buildProjectInfoList(
+                      context,
+                      model.subProjects,
+                      model.ranking,
+                      model.pushToSubProjectPage,
+                      model.longClickSubProjectDialog,
+                      model.getCountPercentage))));
+
+  // 构建项目列表
+  Widget _buildProjectInfoList(
+    BuildContext context,
+    List<SubProjectData> subProjects,
+    List<String> ranking,
+    Function(BuildContext, SubProjectData, String) pushToSubProjectPage,
+    Function(BuildContext, SubProjectData) longClickSubProjectDialog,
+    Function(String) getCountPercentage,) => GridView.builder(
+          itemCount: subProjects.length,
+          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: Provider.of<ProjectInfoViewModel>(context).row,
+            childAspectRatio: 1,
           ),
-        ),
-      );
-
-  Widget _buildProjectInfoWidget({int line = 4}) => Container(
-      margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-      child: Consumer<ProjectInfoViewModel>(builder: (context, model, child) {
-        if (model.subProjects.isEmpty) {
-          return const Center(child: Text('没有项目，点击+添加'));
-        }
-        return MediaQuery.removePadding(
-          context: context,
-          removeTop: true,
-          removeBottom: true,
-          child: _buildProjectInfoList(model, line: line),
-        );
-      }));
-
-  Widget _buildProjectInfoList(ProjectInfoViewModel model, {int line = 4}) =>
-      GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: line,
-          childAspectRatio: 1,
-        ),
-        itemCount: model.subProjects.length,
-        itemBuilder: (context, index) => SingleSubProjectWidget(
-          width: MediaQuery.of(context).size.width / line,
-          countPercent: model.getCountPercentage(model.subProjects[index].count),
-          countNum: model.subProjects[index].count,
-          name: model.subProjects[index].name,
-          color: parseColor(model.subProjects[index].color),
-          index: model.ranking[index],
-          showType: widget.showType,
-          textColor: parseColor(model.subProjects[index].textColor),
-          onClick: () => model.pushToSubProjectPage(context, model.subProjects[index], widget.parentData.id),
-          onLongClick: () => model.longClickSubProjectDialog(context, model.subProjects[index]),
-        ),
-      );
+          itemBuilder: (context, index) => SingleSubProjectWidget(
+                index: ranking[index],
+                showType: widget.showType,
+                name: subProjects[index].name,
+                countNum: subProjects[index].count,
+                color: parseColor(subProjects[index].color),
+                textColor: parseColor(subProjects[index].textColor),
+                countPercent: getCountPercentage(subProjects[index].count),
+                onLongClick: () => longClickSubProjectDialog(context, subProjects[index]),
+                onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id),
+                width: MediaQuery.of(context).size.width / Provider.of<ProjectInfoViewModel>(context).row,
+              ));
 }

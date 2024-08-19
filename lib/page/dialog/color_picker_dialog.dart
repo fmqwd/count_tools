@@ -25,13 +25,11 @@ class ColorPickerDialogState extends State<ColorPickerDialog>
     currentColor = widget.initialColor;
   }
 
-  void onColorChanged(Color color) {
-    setState(() {
-      currentColor = color;
-      notifyListeners();
-      widget.onChanged(color);
-    });
-  }
+  void onColorChanged(Color color) => setState(() {
+        currentColor = color;
+        notifyListeners();
+        widget.onChanged(color);
+      });
 
   @override
   Widget build(BuildContext context) => AlertDialog(
