@@ -68,8 +68,7 @@ Widget buildAddItemDialog(
                       parentId: parentData.id,
                       projectId: projectId,
                       ext: "")));
-          Provider.of<SubProjectInfoViewModel>(context, listen: false)
-              .updateSubProject(parentData);
+          Provider.of<SubProjectInfoViewModel>(context, listen: false).updateSubProject(parentData);
           Navigator.of(dialogContext).pop();
         },
       ),
@@ -78,18 +77,12 @@ Widget buildAddItemDialog(
 }
 
 // 错误提示对话框
-void _showErrorDialog(BuildContext context, String message) {
-  showDialog(
+void _showErrorDialog(BuildContext context, String message) => showDialog(
     context: context,
-    builder: (context) => AlertDialog(
-      title: const Text("错误"),
-      content: Text(message),
-      actions: [
-        TextButton(
-          child: const Text("确定"),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ],
-    ),
-  );
-}
+    builder: (context) =>
+        AlertDialog(title: const Text("错误"), content: Text(message), actions: [
+          TextButton(
+            child: const Text("确定"),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        ]));

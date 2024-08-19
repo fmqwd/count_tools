@@ -14,9 +14,8 @@ void showAppAboutDialog(BuildContext context) => showDialog(
               const Text('理论上可能会没事闲的更新，但是实际上……看心情'),
               const Text('本项目已完整开源至GitHub，欢迎Star和Fork'),
               GestureDetector(
-                child: const Text('仓库：fmqwd/count_tools',
-                    style: TextStyle(color: Colors.blue)),
+                child: const Text('仓库：fmqwd/count_tools', style: TextStyle(color: Colors.blue)),
                 onTap: () async => await RouteUtils.launchURL(AppUrl.gitHub),
               ),
-              const Text('Copyright © 2024 by fmqwd'),
+              const Text('Copyright © 2024 by fmqwd')
             ])));

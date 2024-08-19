@@ -51,11 +51,16 @@ class HomePageViewModel extends ChangeNotifier {
     int row = await SettingUtils.getProjectInfoRowNum();
     String order = await SettingUtils.getProjectInfoSort();
     String criteria = await SettingUtils.getProjectInfoSortType();
+    String showType = await SettingUtils.getShowMode();
     if (context.mounted) {
       return RouteUtils.pushAnim(
           context,
           ProjectInfoPage(
-              parentData: data, row: row, order: order, criteria: criteria));
+              parentData: data,
+              row: row,
+              order: order,
+              criteria: criteria,
+              showType: showType));
     }
   }
 

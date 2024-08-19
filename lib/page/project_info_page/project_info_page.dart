@@ -11,6 +11,7 @@ class ProjectInfoPage extends StatefulWidget {
   final ProjectData parentData;
   final int row;
   final String order;
+  final String showType;
   final String criteria;
 
   const ProjectInfoPage(
@@ -18,6 +19,7 @@ class ProjectInfoPage extends StatefulWidget {
       required this.parentData,
       required this.row,
       required this.order,
+      required this.showType,
       required this.criteria})
       : super(key: key);
 
@@ -47,7 +49,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
 
   Widget _buildProjectInfoContent() => Column(children: [
         _buildProjectInfoTitle(),
-        Expanded(child: _buildProjectInfoList(line:widget.row)),
+        Expanded(child: _buildProjectInfoWidget(line:widget.row)),
       ]);
 
   Widget _buildProjectInfoTitle() => Container(
@@ -62,7 +64,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
         ),
       );
 
-  Widget _buildProjectInfoList({int line = 4}) => Container(
+  Widget _buildProjectInfoWidget({int line = 4}) => Container(
       margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
       child: Consumer<ProjectInfoViewModel>(builder: (context, model, child) {
         if (model.subProjects.isEmpty) {
@@ -72,23 +74,28 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           context: context,
           removeTop: true,
           removeBottom: true,
-          child: GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: line,
-              childAspectRatio:1,
-            ),
-            itemCount: model.subProjects.length,
-            itemBuilder: (context, index) => SingleSubProjectWidget(
-              width: MediaQuery.of(context).size.width / line,
-              countPercent: model.getCountPercentage(model.subProjects[index].count),
-              countNum: model.subProjects[index].count,
-              name: model.subProjects[index].name,
-              color: parseColor(model.subProjects[index].color),
-              textColor: parseColor(model.subProjects[index].textColor),
-              onClick: () => model.pushToSubProjectPage(context, model.subProjects[index], widget.parentData.id),
-              onLongClick: () => model.longClickSubProjectDialog(context, model.subProjects[index]),
-            ),
-          ),
+          child: _buildProjectInfoList(model, line: line),
         );
       }));
+
+  Widget _buildProjectInfoList(ProjectInfoViewModel model, {int line = 4}) =>
+      GridView.builder(
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: line,
+          childAspectRatio: 1,
+        ),
+        itemCount: model.subProjects.length,
+        itemBuilder: (context, index) => SingleSubProjectWidget(
+          width: MediaQuery.of(context).size.width / line,
+          countPercent: model.getCountPercentage(model.subProjects[index].count),
+          countNum: model.subProjects[index].count,
+          name: model.subProjects[index].name,
+          color: parseColor(model.subProjects[index].color),
+          index: model.ranking[index],
+          showType: widget.showType,
+          textColor: parseColor(model.subProjects[index].textColor),
+          onClick: () => model.pushToSubProjectPage(context, model.subProjects[index], widget.parentData.id),
+          onLongClick: () => model.longClickSubProjectDialog(context, model.subProjects[index]),
+        ),
+      );
 }

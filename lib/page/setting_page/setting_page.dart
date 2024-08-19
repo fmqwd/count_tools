@@ -3,6 +3,7 @@ import 'package:count_tools/page/dialog/choose_theme_dialog.dart';
 import 'package:count_tools/page/dialog/user_info_dialog.dart';
 import 'package:count_tools/page/dialog/version_check_dialog.dart';
 import 'package:count_tools/utils/setting_utils.dart';
+import 'package:count_tools/value/info.dart';
 import 'package:count_tools/value/style/text_style.dart';
 import 'package:flutter/material.dart';
 
@@ -50,13 +51,7 @@ class _SettingPageState extends State<SettingPage> {
         const SizedBox(width: 8),
         const Icon(Icons.arrow_forward_ios_rounded, size: 16)
       ]),
-      () => showThemePicker(context, (bool isChange)  {
-        if (isChange) {
-          setState(() {
-
-          });
-        }
-      }));
+      () => showThemePicker(context, (bool isChange) => setState(() => {})));
 
   //关于
   Widget _buildAbout() => _buildSettingLine(
@@ -72,6 +67,8 @@ class _SettingPageState extends State<SettingPage> {
       Row(children: [
         const Text('更新', style: AppTextStyle.bodyBig),
         Expanded(child: Container()),
+        Text("v${AppInfo.appVersion}", style: AppTextStyle.bodyBd),
+        const SizedBox(width: 8),
         const Icon(Icons.arrow_forward_ios_rounded, size: 16)
       ]),
       () => VersionUpdateChecker(context).checkForUpdates());

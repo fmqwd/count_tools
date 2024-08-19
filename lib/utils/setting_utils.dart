@@ -114,6 +114,16 @@ class SettingUtils {
   static Future<void> setIsNotFirstEnter() async {
     await SharedUtils.setBool("isNotFirstEnter", true);
   }
+
+  //获取显示模式
+  static Future<String> getShowMode() async {
+    return await SharedUtils.getString("showMode");
+  }
+
+  //设置显示模式
+  static Future<void> setShowMode(String showMode) async {
+    await SharedUtils.setString("showMode", showMode);
+  }
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(

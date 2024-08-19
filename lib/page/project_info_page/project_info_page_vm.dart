@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:count_tools/data/database/helper/item_helper.dart';
 import 'package:count_tools/data/database/helper/project_helper.dart';
 import 'package:count_tools/data/database/helper/sub_project_helper.dart';
@@ -26,6 +28,10 @@ class ProjectInfoViewModel extends ChangeNotifier {
   List<ItemData> _items = [];
   List<ItemData> get items => _items;
 
+  //排名
+  List<String> _ranking =[];
+  List<String> get ranking => _ranking;
+
   bool _isDesc = true;
   bool get isDesc => _isDesc;
 
@@ -44,8 +50,29 @@ class ProjectInfoViewModel extends ChangeNotifier {
     _subProjects = sortSubProjectData(_subProjects);
     _items = await itemDBHelper.getByProject(parentId);
     setIsDesc();
+    await loadRanking();
     notifyListeners();
   }
+
+  Future<void> loadRanking() async {
+    List<int> nums = _subProjects.map((e) => int.parse(e.count)).toList();
+    _ranking = getRanks(nums).map((e) => e.toString()).toList();
+  }
+
+  List<int?> getRanks(List<int> numbers) {
+    final rankedMap = <int, int>{};
+    int rank = 1;
+    for (int i = 0; i < numbers.length; i++) {
+      if (i == 0 || numbers[i] != numbers[i - 1]) {
+        rankedMap[numbers[i]] = rank;
+        rank++;
+      } else {
+        rankedMap[numbers[i]] = rank - 1;
+      }
+    }
+    return numbers.map((number) => rankedMap[number]).toList();
+  }
+
 
   Future<void> addSubProject(data, parentData) async {
     await subProjectDbHelper.insert(data);

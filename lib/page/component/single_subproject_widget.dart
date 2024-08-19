@@ -9,6 +9,8 @@ class SingleSubProjectWidget extends StatelessWidget {
   final String name; //名称
   final Color color; //颜色
   final Color textColor; //文字颜色
+  final String index; //序号
+  final String showType; //展示类型
   final void Function() onClick;
   final void Function() onLongClick;
 
@@ -20,6 +22,8 @@ class SingleSubProjectWidget extends StatelessWidget {
     required this.name,
     required this.color,
     required this.textColor,
+    required this.index,
+    required this.showType,
     required this.onClick,
     required this.onLongClick,
   });
@@ -38,16 +42,11 @@ class SingleSubProjectWidget extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              SizedBox(height: (width / 8)),
-              Text(countNum.toString(),
-                  style: AppTextStyle.customStyle(size: width / 5)),
-              Expanded(child: Container()),
-              Text(countPercent, style: AppTextStyle.customSize(width / 7)),
-              Expanded(child: Container()),
+              for (Widget widget in _getWidget()) widget,
               Container(
                 alignment: Alignment.center,
                 width: double.infinity,
-                height: width / 5,
+                height: width / 4.5,
                 decoration: BoxDecoration(
                     color: color,
                     borderRadius: const BorderRadius.only(
@@ -56,7 +55,7 @@ class SingleSubProjectWidget extends StatelessWidget {
                     )),
                 child: Text(name,
                     style: AppTextStyle.customStyle(
-                        size: width / 7,
+                        size: width / 6.5,
                         color: textColor,
                         fontWeight: FontWeight.normal)),
               ),
@@ -64,4 +63,75 @@ class SingleSubProjectWidget extends StatelessWidget {
           ),
         ),
       );
+
+  List<Widget> _getWidget() {
+    switch (showType) {
+      case '仅排名':
+        return _onlyIndex();
+      case '仅百分比':
+        return _onlyPercent();
+      case '仅数量':
+        return _onlyNum();
+      case '数量-百分比':
+        return _numPercent();
+      case '排名-百分比':
+        return _rankPercent();
+      case '排名-数量':
+        return _rankNum();
+      default:
+        return _numPercent();
+    }
+  }
+
+  // 仅排名
+  List<Widget> _onlyIndex() => [
+        Expanded(child: Container()),
+        Text(index, style: AppTextStyle.customSize(width / 3.5)),
+        const Text("名"),
+        Expanded(child: Container())
+      ];
+
+  // 仅百分比
+  List<Widget> _onlyPercent() => [
+        Expanded(child: Container()),
+        const Text("占比"),
+        Text(countPercent, style: AppTextStyle.customSize(width / 4.5)),
+        Expanded(child: Container())
+      ];
+
+  // 仅数量
+  List<Widget> _onlyNum() => [
+        Expanded(child: Container()),
+        Text(countNum, style: AppTextStyle.customSize(width / 3.5)),
+        const Text("张"),
+        Expanded(child: Container())
+      ];
+
+  // 数量-百分比
+  List<Widget> _numPercent() => [
+        SizedBox(height: (width / 8)),
+        Text(countNum.toString(),
+            style: AppTextStyle.customStyle(size: width / 5)),
+        Expanded(child: Container()),
+        Text(countPercent, style: AppTextStyle.customSize(width / 7)),
+        Expanded(child: Container()),
+      ];
+
+  // 排名-百分比
+  List<Widget> _rankPercent() => [
+        SizedBox(height: (width / 8)),
+        Text(index, style: AppTextStyle.customStyle(size: width / 5)),
+        Expanded(child: Container()),
+        Text(countPercent, style: AppTextStyle.customSize(width / 7)),
+        Expanded(child: Container()),
+      ];
+
+  // 排名-数量
+  List<Widget> _rankNum() => [
+        SizedBox(height: (width / 8)),
+        Text(index, style: AppTextStyle.customStyle(size: width / 5)),
+        Expanded(child: Container()),
+        Text(countNum, style: AppTextStyle.customSize(width / 7)),
+        Expanded(child: Container()),
+      ];
 }

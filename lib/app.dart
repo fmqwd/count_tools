@@ -37,6 +37,7 @@ class AppState extends State<App> {
       SettingUtils.setProjectInfoRowNum(5);
       SettingUtils.setProjectInfoSort('降序');
       SettingUtils.setProjectInfoSortType('数量');
+      SettingUtils.setShowMode('数量-百分比');
     }
   }
 
