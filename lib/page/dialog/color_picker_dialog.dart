@@ -46,6 +46,7 @@ class ColorPickerDialogState extends State<ColorPickerDialog>
                 scrollDirection: Axis.horizontal,
                 child: Row(children: [
                   ColorOption(color: Colors.red, onChanged: onColorChanged),
+                  ColorOption(color: Colors.pink, onChanged: onColorChanged),
                   ColorOption(color: Colors.orange, onChanged: onColorChanged),
                   ColorOption(color: Colors.yellow, onChanged: onColorChanged),
                   ColorOption(color: Colors.green, onChanged: onColorChanged),
