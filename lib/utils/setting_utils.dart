@@ -91,16 +91,6 @@ class SettingUtils {
   }
 
   //设置projectInfo页面排序方式
-  static Future<void> setProjectInfoSortType(String sortType) async {
-    await SharedUtils.setString("projectInfoSortType", sortType);
-  }
-
-  //获取projectInfo页面排序方式
-  static Future<String> getProjectInfoSortType() async {
-    return await SharedUtils.getString("projectInfoSortType");
-  }
-
-  //设置projectInfo页面排序方式
   static Future<void> setProjectInfoSortDirection(String sortDirection) async {
     await SharedUtils.setString("projectInfoSortDirection", sortDirection);
   }

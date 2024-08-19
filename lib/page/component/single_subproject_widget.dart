@@ -10,7 +10,7 @@ class SingleSubProjectWidget extends StatelessWidget {
   final Color color; //颜色
   final Color textColor; //文字颜色
   final String index; //序号
-  final String showType; //展示类型
+  final String showMode; //展示类型
   final void Function() onClick;
   final void Function() onLongClick;
 
@@ -23,7 +23,7 @@ class SingleSubProjectWidget extends StatelessWidget {
     required this.color,
     required this.textColor,
     required this.index,
-    required this.showType,
+    required this.showMode,
     required this.onClick,
     required this.onLongClick,
   });
@@ -65,7 +65,7 @@ class SingleSubProjectWidget extends StatelessWidget {
       );
 
   List<Widget> _getWidget() {
-    switch (showType) {
+    switch (showMode) {
       case '仅排名':
         return _onlyIndex();
       case '仅百分比':

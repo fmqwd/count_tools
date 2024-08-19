@@ -1,5 +1,3 @@
-import 'dart:collection';
-
 import 'package:count_tools/data/database/helper/item_helper.dart';
 import 'package:count_tools/data/database/helper/project_helper.dart';
 import 'package:count_tools/data/database/helper/sub_project_helper.dart';
@@ -8,8 +6,10 @@ import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_subproject_dialog.dart';
 import 'package:count_tools/page/dialog/long_click_subproject_dialog.dart';
+import 'package:count_tools/page/dialog/project_info_setting_dialog.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page.dart';
 import 'package:count_tools/utils/route_utils.dart';
+import 'package:count_tools/utils/safe_utils.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -28,7 +28,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
   List<ItemData> _items = [];
   List<ItemData> get items => _items;
 
-  List<String> _ranking =[];
+  List<String> _ranking = [];
   List<String> get ranking => _ranking;
 
   int _row = 5;
@@ -37,33 +37,43 @@ class ProjectInfoViewModel extends ChangeNotifier {
   bool _isDesc = true;
   bool get isDesc => _isDesc;
 
-  void setIsDesc() async {
-    String sort = await SettingUtils.getProjectInfoSort();
-    if (sort == '升序') {
-      _isDesc = false;
-    } else {
-      _isDesc = true;
-    }
-  }
+  String _showMode = "";
+  String get showMode => _showMode;
 
   Future<void> loadSubProjects() async {
+    await loadShared();
+    loadSubProjectByCount();
+  }
+
+  Future<void> loadSubProjectByCount() async {
+    _items = await itemDBHelper.getByProject(parentId);
     _subProjects = await subProjectDbHelper.getByParent(parentId);
     _subProjects = sortSubProjectData(_subProjects);
-    _items = await itemDBHelper.getByProject(parentId);
-    setIsDesc();
     await loadRanking();
-    await loadRow();
     notifyListeners();
+  }
+
+  Future<void> loadShared() async {
+    await _loadRow();
+    await _loadSort();
+    await _loadShowMode();
   }
 
   Future<void> loadRanking() async {
-    List<int> nums = _subProjects.map((e) => int.parse(e.count)).toList();
+    List<int> nums = _subProjects.map((e) => safeInt(e.count)).toList();
     _ranking = getRanks(nums).map((e) => e.toString()).toList();
   }
 
-  Future<void> loadRow() async {
+  Future<void> _loadRow() async {
     _row = await SettingUtils.getProjectInfoRowNum();
-    notifyListeners();
+  }
+
+  Future<void> _loadSort() async {
+    _isDesc = await SettingUtils.getProjectInfoSort() == '降序';
+  }
+
+  Future<void> _loadShowMode() async {
+    _showMode = await SettingUtils.getShowMode();
   }
 
   Future<void> addSubProject(data, parentData) async {
@@ -107,18 +117,20 @@ class ProjectInfoViewModel extends ChangeNotifier {
     if (count == '0') {
       return '0.0%';
     }
-    int total = int.parse(count);
+    int total = safeInt(count);
     int done = items.length;
     return '${(total / done * 100).toStringAsFixed(2)}%';
   }
 
   List<SubProjectData> sortSubProjectData(List<SubProjectData> subProject) =>
       subProject.toList()
-        ..sort((a, b) => (int.parse(isDesc ? b.count : a.count))
-            .compareTo(int.parse(isDesc ? a.count : b.count)));
+        ..sort((a, b) => (safeInt(isDesc ? b.count : a.count))
+            .compareTo(safeInt(isDesc ? a.count : b.count)));
 
-  pushToSubProjectPage(BuildContext context, SubProjectData data, String projectId) =>
-      RouteUtils.pushAnim(context, SubProjectInfoPage(parentData: data, projectId: projectId));
+  pushToSubProjectPage(
+          BuildContext context, SubProjectData data, String projectId) =>
+      RouteUtils.pushAnim(
+          context, SubProjectInfoPage(parentData: data, projectId: projectId));
 
   addSubProjectDialog(BuildContext context, ProjectData data) => showDialog(
       context: context,
@@ -130,4 +142,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
           context: context,
           builder: (BuildContext dialogContext) =>
               LongClickSubProjectDialog(extContext: context, data: data));
+
+  showProjectSettingDialog(BuildContext context) =>
+      showProjectInfoSettingDialog(context, () => loadSubProjects());
 }

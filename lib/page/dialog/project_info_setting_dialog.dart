@@ -1,26 +1,31 @@
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
-void showProjectInfoSettingDialog(BuildContext context) async {
+void showProjectInfoSettingDialog(BuildContext context, void Function() callback) async {
   final settings = await _loadSettings();
   if (context.mounted) {
     showDialog(
         context: context,
-        builder: (dialogContext) => SettingDialog(initialSettings: settings));
+        builder: (dialogContext) =>
+            SettingDialog(initialSettings: settings, callback: callback));
   }
 }
 
 Future<Map<String, dynamic>> _loadSettings() async => {
       'row': await SettingUtils.getProjectInfoRowNum(),
       'order': await SettingUtils.getProjectInfoSort(),
-      'criteria': await SettingUtils.getProjectInfoSortType(),
       'showType': await SettingUtils.getShowMode()
     };
 
 class SettingDialog extends StatefulWidget {
+  final void Function() callback;
   final Map<String, dynamic> initialSettings;
 
-  const SettingDialog({Key? key, required this.initialSettings}) : super(key: key);
+  const SettingDialog({
+    Key? key,
+    required this.initialSettings,
+    required this.callback,
+  }) : super(key: key);
 
   @override
   SettingDialogState createState() => SettingDialogState();
@@ -29,7 +34,6 @@ class SettingDialog extends StatefulWidget {
 class SettingDialogState extends State<SettingDialog> {
   final List<int> rowOptions = [4, 5, 6];
   final List<String> orderOptions = ['升序', '降序'];
-  final List<String> criteriaOptions = ['数量', '金额'];
   final List<String> displayOptions = ['数量-百分比', '排名-百分比', '排名-数量', '仅排名', '仅百分比', '仅数量'];
 
   Map<String, dynamic> settings = {};
@@ -49,7 +53,6 @@ class SettingDialogState extends State<SettingDialog> {
               children: [
                 _buildDropdown('行数', 'row', rowOptions),
                 _buildDropdown('排序方式', 'order', orderOptions),
-                _buildDropdown('排序条件', 'criteria', criteriaOptions),
                 _buildDropdown('显示格式', 'showType', displayOptions)
               ]),
           actions: [
@@ -70,8 +73,8 @@ class SettingDialogState extends State<SettingDialog> {
   void _saveSettings() {
     SettingUtils.setProjectInfoRowNum(settings['row']);
     SettingUtils.setProjectInfoSort(settings['order']);
-    SettingUtils.setProjectInfoSortType(settings['criteria']);
     SettingUtils.setShowMode(settings['showType']);
+    widget.callback();
     Navigator.of(context).pop();
   }
 }

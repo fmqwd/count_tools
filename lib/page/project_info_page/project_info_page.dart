@@ -2,7 +2,6 @@ import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/component/single_subproject_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
-import 'package:count_tools/page/dialog/project_info_setting_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:count_tools/value/style/text_style.dart';
@@ -11,16 +10,10 @@ import 'package:provider/provider.dart';
 
 class ProjectInfoPage extends StatefulWidget {
   final ProjectData parentData;
-  final String order;
-  final String showType;
-  final String criteria;
 
   const ProjectInfoPage({
     Key? key,
     required this.parentData,
-    required this.order,
-    required this.showType,
-    required this.criteria,
   }) : super(key: key);
 
   @override
@@ -37,10 +30,12 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
         floatingActionButton: _buildFloatButton(),
       ));
 
-  Widget _titleAction() => IconButton(
-    icon: const Icon(Icons.settings),
-    onPressed: () => showProjectInfoSettingDialog(context),
-  );
+  Widget _titleAction() => Builder(
+      builder: (context) => IconButton(
+            icon: const Icon(Icons.settings),
+            onPressed: () => Provider.of<ProjectInfoViewModel>(context, listen: false)
+                .showProjectSettingDialog(context),
+          ));
 
   Widget _buildFloatButton() => Builder(
       builder: (context) => FloatingActionButton(
@@ -95,12 +90,12 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           ),
           itemBuilder: (context, index) => SingleSubProjectWidget(
                 index: ranking[index],
-                showType: widget.showType,
                 name: subProjects[index].name,
                 countNum: subProjects[index].count,
                 color: parseColor(subProjects[index].color),
                 textColor: parseColor(subProjects[index].textColor),
                 countPercent: getCountPercentage(subProjects[index].count),
+                showMode: Provider.of<ProjectInfoViewModel>(context).showMode,
                 onLongClick: () => longClickSubProjectDialog(context, subProjects[index]),
                 onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id),
                 width: MediaQuery.of(context).size.width / Provider.of<ProjectInfoViewModel>(context).row,

@@ -47,21 +47,8 @@ class HomePageViewModel extends ChangeNotifier {
   }
 
   // 跳转项目详情
-  pushProjectInfoPage(BuildContext context, ProjectData data) async {
-    int row = await SettingUtils.getProjectInfoRowNum();
-    String order = await SettingUtils.getProjectInfoSort();
-    String criteria = await SettingUtils.getProjectInfoSortType();
-    String showType = await SettingUtils.getShowMode();
-    if (context.mounted) {
-      return RouteUtils.pushAnim(
-          context,
-          ProjectInfoPage(
-              parentData: data,
-              order: order,
-              criteria: criteria,
-              showType: showType));
-    }
-  }
+  pushProjectInfoPage(BuildContext context, ProjectData data) =>
+      RouteUtils.pushAnim(context, ProjectInfoPage(parentData: data));
 
   // 跳转设置页
   pushSetPage(BuildContext context) {
