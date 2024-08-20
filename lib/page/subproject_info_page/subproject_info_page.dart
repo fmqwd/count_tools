@@ -31,7 +31,9 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
       value: _vm,
       child: Scaffold(
           appBar: AppBar(title: Text(widget.parentData.name), actions: [
-            IconButton(icon: const Icon(Icons.settings), onPressed: () {})
+            IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => _vm.showSettingDialog(context)),
           ]),
           body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
           floatingActionButton: Builder(
@@ -42,7 +44,7 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
 
   Widget _buildPersonInfoContent(String count) => Column(children: [
         _buildPersonInfoTitle(),
-        _buildPersonInfoItem(),
+        if (_vm.isShowPrice) _buildPersonInfoItem(),
         Expanded(child: _buildPersonInfoList())
       ]);
 

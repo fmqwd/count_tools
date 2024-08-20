@@ -3,7 +3,9 @@ import 'package:count_tools/data/database/helper/sub_project_helper.dart';
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_item_dialog.dart';
+import 'package:count_tools/page/dialog/subproject_info_setting_dialog.dart';
 import 'package:count_tools/utils/safe_utils.dart';
+import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 class SubProjectInfoViewModel extends ChangeNotifier {
@@ -11,26 +13,37 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   final SubProjectDbHelper subProjectDbHelper = SubProjectDbHelper();
 
   List<ItemData> _items = [];
-
   List<ItemData> get items => _items;
 
   List<String> _dates = [];
-
   List<String> get dates => _dates;
-  
+
   String _cost = '';
   String get cost => _cost;
 
+  bool _isShowPrice = true;
+  bool get isShowPrice => _isShowPrice;
+
+  bool _isQuickAdd = false;
+  bool get isQuickAdd => _isQuickAdd;
+
   Future<void> loadItems(String parentId) async {
+    await _loadShared();
     _items = await itemDBHelper.getByParent(parentId);
     _dates = _items.map((e) => e.date).toSet().toList();
-    loadCost();
+    if (_isShowPrice) loadCost();
     notifyListeners();
   }
-  
-  Future<void> loadCost() async {
+
+  Future<void> _loadShared() async {
+    _isShowPrice = await SettingUtils.getIsShowTotalPrice();
+    _isQuickAdd = await SettingUtils.getIsQuickAdd();
+    notifyListeners();
+  }
+
+  void loadCost() {
     double mCost = 0.0;
-    for(ItemData item in items) {
+    for (ItemData item in items) {
       mCost += safeDouble(item.price);
     }
     _cost = mCost.toString();
@@ -72,4 +85,7 @@ class SubProjectInfoViewModel extends ChangeNotifier {
           context: context,
           builder: (BuildContext dialogContext) =>
               buildAddItemDialog(context, dialogContext, data, id));
+
+  showSettingDialog(BuildContext context) =>
+      showSubProjectInfoSettingDialog(context, () => _loadShared());
 }
