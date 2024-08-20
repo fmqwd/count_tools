@@ -18,22 +18,27 @@ class SubProjectInfoPage extends StatefulWidget {
 }
 
 class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
+  late SubProjectInfoViewModel _vm;
+
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (context) => SubProjectInfoViewModel()..loadItems(widget.parentData.id),
+  void initState() {
+    super.initState();
+    _vm = SubProjectInfoViewModel()..loadItems(widget.parentData.id);
+  }
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider.value(
+      value: _vm,
       child: Scaffold(
-        appBar: AppBar(title: Text(widget.parentData.name), actions: [
-          IconButton(icon: const Icon(Icons.settings), onPressed: () {})
-        ]),
-        body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
-        floatingActionButton: Builder(
-          builder: (context) => FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () => Provider.of<SubProjectInfoViewModel>(context, listen: false)
-                .addItemDialog(context, widget.parentData, widget.projectId),
-          ),
-        ),
-      ));
+          appBar: AppBar(title: Text(widget.parentData.name), actions: [
+            IconButton(icon: const Icon(Icons.settings), onPressed: () {})
+          ]),
+          body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
+          floatingActionButton: Builder(
+            builder: (context) => FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => _vm.addItemDialog(context, widget.parentData, widget.projectId)),
+          )));
 
   Widget _buildPersonInfoContent(String count) => Column(children: [
         _buildPersonInfoTitle(),
@@ -56,8 +61,7 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
   Widget _buildPersonInfoItem() => Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         child: Consumer<SubProjectInfoViewModel>(
-          builder: (context, model, child) =>Text("总计花费：${model.cost}")
-        ),
+            builder: (context, model, child) => Text("总计花费：${model.cost}")),
       );
 
   Widget _buildPersonInfoList() => Container(

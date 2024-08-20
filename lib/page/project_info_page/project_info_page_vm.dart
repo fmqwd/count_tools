@@ -42,10 +42,6 @@ class ProjectInfoViewModel extends ChangeNotifier {
 
   Future<void> loadSubProjects() async {
     await loadShared();
-    loadSubProjectByCount();
-  }
-
-  Future<void> loadSubProjectByCount() async {
     _items = await itemDBHelper.getByProject(parentId);
     _subProjects = await subProjectDbHelper.getByParent(parentId);
     _subProjects = sortSubProjectData(_subProjects);
@@ -54,26 +50,14 @@ class ProjectInfoViewModel extends ChangeNotifier {
   }
 
   Future<void> loadShared() async {
-    await _loadRow();
-    await _loadSort();
-    await _loadShowMode();
+    _showMode = await SettingUtils.getShowMode();
+    _isDesc = await SettingUtils.getProjectInfoSort() == '降序';
+    _row = await SettingUtils.getProjectInfoRowNum();
   }
 
   Future<void> loadRanking() async {
     List<int> nums = _subProjects.map((e) => safeInt(e.count)).toList();
     _ranking = getRanks(nums).map((e) => e.toString()).toList();
-  }
-
-  Future<void> _loadRow() async {
-    _row = await SettingUtils.getProjectInfoRowNum();
-  }
-
-  Future<void> _loadSort() async {
-    _isDesc = await SettingUtils.getProjectInfoSort() == '降序';
-  }
-
-  Future<void> _loadShowMode() async {
-    _showMode = await SettingUtils.getShowMode();
   }
 
   Future<void> addSubProject(data, parentData) async {
@@ -93,11 +77,10 @@ class ProjectInfoViewModel extends ChangeNotifier {
     await loadSubProjects();
   }
 
-  Future<void> updateProjectCount(ProjectData parentData) async {
-    await projectDBHelper.update(parentData.copyWith(
-      count: (subProjects.length).toString(),
-    ));
-  }
+  Future<void> updateProjectCount(ProjectData parentData) async =>
+      await projectDBHelper.update(parentData.copyWith(
+        count: (subProjects.length).toString(),
+      ));
 
   List<int?> getRanks(List<int> numbers) {
     final rankedMap = <int, int>{};
@@ -127,10 +110,8 @@ class ProjectInfoViewModel extends ChangeNotifier {
         ..sort((a, b) => (safeInt(isDesc ? b.count : a.count))
             .compareTo(safeInt(isDesc ? a.count : b.count)));
 
-  pushToSubProjectPage(
-          BuildContext context, SubProjectData data, String projectId) =>
-      RouteUtils.pushAnim(
-          context, SubProjectInfoPage(parentData: data, projectId: projectId));
+  pushToSubProjectPage(BuildContext context, SubProjectData data, String id) =>
+      RouteUtils.pushAnim(context, SubProjectInfoPage(parentData: data, projectId: id));
 
   addSubProjectDialog(BuildContext context, ProjectData data) => showDialog(
       context: context,

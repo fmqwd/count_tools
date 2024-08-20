@@ -18,29 +18,29 @@ class ProjectInfoPage extends StatefulWidget {
 }
 
 class _ProjectInfoPageState extends State<ProjectInfoPage> {
+  late ProjectInfoViewModel _vm;
+
   @override
-  Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (context) => ProjectInfoViewModel(widget.parentData.id)..loadSubProjects(),
+  void initState() {
+    super.initState();
+    _vm = ProjectInfoViewModel(widget.parentData.id)..loadSubProjects();
+  }
+
+  @override
+  Widget build(BuildContext context) => ChangeNotifierProvider.value(
+      value: _vm,
       child: Scaffold(
-        appBar: AppBar(title: Text(widget.parentData.title), actions: [_titleAction()]),
-        body: Center(child: _buildProjectInfoContent()),
-        floatingActionButton: _buildFloatButton(),
-      ));
-
-  Widget _titleAction() => Builder(
-      builder: (context) => IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () => Provider.of<ProjectInfoViewModel>(context, listen: false)
-                .showProjectSettingDialog(context),
-          ));
-
-  Widget _buildFloatButton() => Builder(
-      builder: (context) => FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () =>
-                Provider.of<ProjectInfoViewModel>(context, listen: false)
-                    .addSubProjectDialog(context, widget.parentData),
-          ));
+          appBar: AppBar(title: Text(widget.parentData.title), actions: [
+            IconButton(
+                icon: const Icon(Icons.settings),
+                onPressed: () => _vm.showProjectSettingDialog(context))
+          ]),
+          body: Center(child: _buildProjectInfoContent()),
+          floatingActionButton: Builder(
+              builder: (context) => FloatingActionButton(
+                  child: const Icon(Icons.add),
+                  onPressed: () =>
+                      _vm.addSubProjectDialog(context, widget.parentData)))));
 
   Widget _buildProjectInfoContent() => Column(children: [
         _buildProjectInfoTitle(),
@@ -53,9 +53,8 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           width: double.infinity,
           alignment: Alignment.center,
           child: Text(
-            "当前项目总计${model.subProjects.length}项，${model.items.length}张",
-            style: AppTextStyle.heading3,
-          )));
+              "当前项目总计${model.subProjects.length}项，${model.items.length}张",
+              style: AppTextStyle.heading3)));
 
   Widget _buildProjectInfoWidget() => Consumer<ProjectInfoViewModel>(
       builder: (context, model, child) => Container(
@@ -74,27 +73,27 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
 
   // 构建项目列表
   Widget _buildProjectInfoList(
-    BuildContext context,
-    List<SubProjectData> subProjects,
-    List<String> ranking,
-    Function(BuildContext, SubProjectData, String) pushToSubProjectPage,
-    Function(BuildContext, SubProjectData) longClickSubProjectDialog,
-    Function(String) getCountPercentage,) => GridView.builder(
+          BuildContext context,
+          List<SubProjectData> subProjects,
+          List<String> ranking,
+          Function(BuildContext, SubProjectData, String) pushToSubProjectPage,
+          Function(BuildContext, SubProjectData) longClickSubProjectDialog,
+          Function(String) getCountPercentage) =>
+      GridView.builder(
           itemCount: subProjects.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: Provider.of<ProjectInfoViewModel>(context).row,
+            crossAxisCount: _vm.row,
             childAspectRatio: 1,
           ),
           itemBuilder: (context, index) => SingleSubProjectWidget(
-                index: ranking[index],
-                name: subProjects[index].name,
-                countNum: subProjects[index].count,
-                color: parseColor(subProjects[index].color),
-                textColor: parseColor(subProjects[index].textColor),
-                countPercent: getCountPercentage(subProjects[index].count),
-                showMode: Provider.of<ProjectInfoViewModel>(context).showMode,
-                onLongClick: () => longClickSubProjectDialog(context, subProjects[index]),
-                onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id),
-                width: MediaQuery.of(context).size.width / Provider.of<ProjectInfoViewModel>(context).row,
-              ));
+              index: ranking[index],
+              showMode: _vm.showMode,
+              name: subProjects[index].name,
+              countNum: subProjects[index].count,
+              color: parseColor(subProjects[index].color),
+              width: MediaQuery.of(context).size.width / _vm.row,
+              textColor: parseColor(subProjects[index].textColor),
+              countPercent: getCountPercentage(subProjects[index].count),
+              onLongClick: () => longClickSubProjectDialog(context, subProjects[index]),
+              onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id)));
 }

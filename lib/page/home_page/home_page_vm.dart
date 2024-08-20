@@ -19,26 +19,22 @@ class HomePageViewModel extends ChangeNotifier {
 
   List<ProjectData> get projects => _projects;
 
-  Future<List<ProjectData>> loadProjects() async {
+  Future<void> loadProjects() async {
     _projects = await projectHelper.get();
     notifyListeners();
-    return projects;
   }
 
   Future<void> addProject(ProjectData data) async {
-    await loadProjects();
     await projectHelper.insert(data);
     await loadProjects();
   }
 
   Future<void> editProject(ProjectData data) async {
-    await loadProjects();
     await projectHelper.update(data);
     await loadProjects();
   }
 
   Future<void> deleteProject(String id) async {
-    await loadProjects();
     await projectHelper.delete(id);
     await subProjectDbHelper.deleteByParent(id);
     await itemDBHelper.deleteByProject(id);
@@ -50,9 +46,8 @@ class HomePageViewModel extends ChangeNotifier {
       RouteUtils.pushAnim(context, ProjectInfoPage(parentData: data));
 
   // 跳转设置页
-  pushSetPage(BuildContext context) {
-    return RouteUtils.pushAnim(context, const SettingPage());
-  }
+  pushSetPage(BuildContext context) =>
+      RouteUtils.pushAnim(context, const SettingPage());
 
   // 跳转添加项目弹窗
   addProjectDialog(BuildContext context) => showDialog(

@@ -9,16 +9,14 @@ Widget buildEditProjectDialog(
   ProjectData data,
 ) {
   TextEditingController titleCon = TextEditingController();
+  titleCon.text = data.title;
   TextEditingController subtitleCon = TextEditingController();
+  subtitleCon.text = data.subTitle;
   return AlertDialog(
     title: const Text("编辑项目"),
     content: Column(mainAxisSize: MainAxisSize.min, children: [
-      TextField(
-          controller: titleCon,
-          decoration: InputDecoration(hintText: data.title)),
-      TextField(
-          controller: subtitleCon,
-          decoration: InputDecoration(hintText: data.subTitle))
+      TextField(controller: titleCon),
+      TextField(controller: subtitleCon)
     ]),
     actions: [
       TextButton(
