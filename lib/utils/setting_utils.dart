@@ -1,4 +1,4 @@
-//首页设置工具，包括从sharedpreferences中获取设置，保存设置，更新设置
+//首页设置工具，包括从shared preferences中获取设置，保存设置，更新设置
 //获取的内容包括主题颜色等
 import 'package:count_tools/utils/shared_utils.dart';
 import 'package:flutter/material.dart';

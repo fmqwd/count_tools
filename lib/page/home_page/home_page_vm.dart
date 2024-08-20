@@ -8,7 +8,6 @@ import 'package:count_tools/page/dialog/edit_project_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page.dart';
 import 'package:count_tools/page/setting_page/setting_page.dart';
 import 'package:count_tools/utils/route_utils.dart';
-import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
 class HomePageViewModel extends ChangeNotifier {

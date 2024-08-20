@@ -3,6 +3,7 @@ import 'package:count_tools/data/database/helper/sub_project_helper.dart';
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_item_dialog.dart';
+import 'package:count_tools/utils/safe_utils.dart';
 import 'package:flutter/material.dart';
 
 class SubProjectInfoViewModel extends ChangeNotifier {
@@ -16,11 +17,23 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   List<String> _dates = [];
 
   List<String> get dates => _dates;
+  
+  String _cost = '';
+  String get cost => _cost;
 
   Future<void> loadItems(String parentId) async {
     _items = await itemDBHelper.getByParent(parentId);
     _dates = _items.map((e) => e.date).toSet().toList();
+    loadCost();
     notifyListeners();
+  }
+  
+  Future<void> loadCost() async {
+    double mCost = 0.0;
+    for(ItemData item in items) {
+      mCost += safeDouble(item.price);
+    }
+    _cost = mCost.toString();
   }
 
   Future<void> addItem(ItemData data) async {

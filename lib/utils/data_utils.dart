@@ -1,8 +1,5 @@
 import 'dart:math';
 
-//根据时间戳生成id
-import 'dart:math';
-
 String generateUniqueId() {
   // 获取当前时间戳（毫秒）
   int timestamp = DateTime.now().millisecondsSinceEpoch;

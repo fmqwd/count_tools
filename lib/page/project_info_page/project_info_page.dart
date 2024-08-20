@@ -11,10 +11,7 @@ import 'package:provider/provider.dart';
 class ProjectInfoPage extends StatefulWidget {
   final ProjectData parentData;
 
-  const ProjectInfoPage({
-    Key? key,
-    required this.parentData,
-  }) : super(key: key);
+  const ProjectInfoPage({Key? key, required this.parentData}) : super(key: key);
 
   @override
   State<ProjectInfoPage> createState() => _ProjectInfoPageState();

@@ -20,27 +20,28 @@ class SubProjectInfoPage extends StatefulWidget {
 class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
   @override
   Widget build(BuildContext context) => ChangeNotifierProvider(
-      create: (context) =>
-          SubProjectInfoViewModel()..loadItems(widget.parentData.id),
+      create: (context) => SubProjectInfoViewModel()..loadItems(widget.parentData.id),
       child: Scaffold(
-        appBar: AppBar(title: Text(widget.parentData.name)),
+        appBar: AppBar(title: Text(widget.parentData.name), actions: [
+          IconButton(icon: const Icon(Icons.settings), onPressed: () {})
+        ]),
         body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
         floatingActionButton: Builder(
           builder: (context) => FloatingActionButton(
             child: const Icon(Icons.add),
-            onPressed: () => Provider.of<SubProjectInfoViewModel>(context,
-                    listen: false)
+            onPressed: () => Provider.of<SubProjectInfoViewModel>(context, listen: false)
                 .addItemDialog(context, widget.parentData, widget.projectId),
           ),
         ),
       ));
 
   Widget _buildPersonInfoContent(String count) => Column(children: [
-        _buildPersonInfoTitle(count),
+        _buildPersonInfoTitle(),
+        _buildPersonInfoItem(),
         Expanded(child: _buildPersonInfoList())
       ]);
 
-  Widget _buildPersonInfoTitle(String count) => Container(
+  Widget _buildPersonInfoTitle() => Container(
         margin: const EdgeInsets.symmetric(vertical: 10),
         width: double.infinity,
         alignment: Alignment.center,
@@ -49,6 +50,13 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
             "当前项目总计：${model.items.length}",
             style: const TextStyle(fontSize: 20),
           ),
+        ),
+      );
+
+  Widget _buildPersonInfoItem() => Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        child: Consumer<SubProjectInfoViewModel>(
+          builder: (context, model, child) =>Text("总计花费：${model.cost}")
         ),
       );
 
