@@ -50,9 +50,8 @@ class SettingUtils {
     }
   }
 
-  static Future<void> setThemeColor(String color) async {
-    await SharedUtils.setString("themeColor", color);
-  }
+  static Future<void> setThemeColor(String color) async =>
+      await SharedUtils.setString("themeColor", color);
 
   static Future<Widget> getThemeColorWidget() async =>
       _getThemeColorWidget(await getThemeColor());
@@ -65,15 +64,12 @@ class SettingUtils {
       );
 
   //设置全局theme颜色
-  static Future<void> setThemeColorWidget(MaterialColor color) async {
-    await SharedUtils.setString("themeColor", color.value.toString());
-  }
+  static Future<void> setThemeColorWidget(MaterialColor color) async =>
+      await SharedUtils.setString("themeColor", color.value.toString());
 
   //获取projectInfo页面显示行数
-  static Future<int> getProjectInfoRowNum() async {
-    int rowNum = await SharedUtils.getInt("projectInfoRowNum");
-    return rowNum;
-  }
+  static Future<int> getProjectInfoRowNum() async =>
+      await SharedUtils.getInt("projectInfoRowNum");
 
   //设置projectInfo页面显示行数
   static Future<void> setProjectInfoRowNum(int rowNum) async {
@@ -86,54 +82,60 @@ class SettingUtils {
   }
 
   //获取projectInfo页面排序依据
-  static Future<String> getProjectInfoSort() async {
-    return await SharedUtils.getString("projectInfoSort");
-  }
+  static Future<String> getProjectInfoSort() async =>
+      await SharedUtils.getString("projectInfoSort");
 
   //设置projectInfo页面排序方式
-  static Future<void> setProjectInfoSortDirection(String sortDirection) async {
-    await SharedUtils.setString("projectInfoSortDirection", sortDirection);
-  }
+  static Future<void> setProjectInfoSortDirection(String sortDirection) async =>
+      await SharedUtils.setString("projectInfoSortDirection", sortDirection);
 
   //判断是否首次进入app
-  static Future<bool> isNotFirstEnter() async {
-    return await SharedUtils.getBool("isNotFirstEnter");
-  }
+  static Future<bool> isNotFirstEnter() async =>
+      await SharedUtils.getBool("isNotFirstEnter");
 
   //设置首次进入app
-  static Future<void> setIsNotFirstEnter() async {
-    await SharedUtils.setBool("isNotFirstEnter", true);
-  }
+  static Future<void> setIsNotFirstEnter() async =>
+      await SharedUtils.setBool("isNotFirstEnter", true);
 
   //获取显示模式
-  static Future<String> getShowMode() async {
-    return await SharedUtils.getString("showMode");
-  }
+  static Future<String> getShowMode() async =>
+      await SharedUtils.getString("showMode");
 
   //设置显示模式
-  static Future<void> setShowMode(String showMode) async {
-    await SharedUtils.setString("showMode", showMode);
-  }
+  static Future<void> setShowMode(String showMode) async =>
+      await SharedUtils.setString("showMode", showMode);
 
   //设置是否快速添加
-  static Future<void> setIsQuickAdd(bool isQuickAdd) async {
-    await SharedUtils.setBool("isQuickAdd", isQuickAdd);
-  }
+  static Future<void> setIsQuickAdd(bool isQuickAdd) async =>
+      await SharedUtils.setBool("isQuickAdd", isQuickAdd);
 
   //获取是否快速添加
-  static Future<bool> getIsQuickAdd() async {
-    return await SharedUtils.getBool("isQuickAdd");
-  }
+  static Future<bool> getIsQuickAdd() async =>
+      await SharedUtils.getBool("isQuickAdd");
 
   //设置是否显示总价
-  static Future<void> setIsShowTotalPrice(bool isShowTotalPrice) async {
-    await SharedUtils.setBool("isShowTotalPrice", isShowTotalPrice);
-  }
+  static Future<void> setIsShowTotalPrice(bool isShowTotalPrice) async =>
+      await SharedUtils.setBool("isShowTotalPrice", isShowTotalPrice);
 
   //获取是否显示总价
-  static Future<bool> getIsShowTotalPrice() async {
-    return await SharedUtils.getBool("isShowTotalPrice");
-  }
+  static Future<bool> getIsShowTotalPrice() async =>
+      await SharedUtils.getBool("isShowTotalPrice");
+
+  //设置是否主动接受更新
+  static Future<void> setIsAutoUpdate(bool isAutoUpdate) async =>
+      await SharedUtils.setBool("isAutoUpdate", isAutoUpdate);
+
+  //获取是否主动接受更新
+  static Future<bool> getIsAutoUpdate() async =>
+      await SharedUtils.getBool("isAutoUpdate");
+
+  //设置最后提示更新的日期
+  static Future<void> setLastUpdateDate(String lastUpdateDate) async =>
+      await SharedUtils.setString("lastUpdateDate", lastUpdateDate);
+
+  //获取最后提示更新的日期
+  static Future<String> getLastUpdateDate() async =>
+      await SharedUtils.getString("lastUpdateDate");
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(

@@ -49,7 +49,7 @@ class SettingDialogState extends State<SettingDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 _buildSwitch('是否开启快速添加？', 'isQuickAdd', false),
-                _buildSwitch('是否显示金额', 'isShowTotalPrice', true),
+                _buildSwitch('是否显示总共花费', 'isShowTotalPrice', true),
               ]),
           actions: [
             TextButton(

@@ -1,5 +1,7 @@
 import 'package:count_tools/page/component/single_project_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
+import 'package:count_tools/page/dialog/version_check_dialog.dart';
+import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -21,6 +23,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _vm = HomePageViewModel()..loadProjects();
+    _checkUpdate();
   }
 
   @override
@@ -56,4 +59,12 @@ class _HomePageState extends State<HomePage> {
                     onEdit: () => model.editProjectDialog(
                         context, model.projects[index]))));
       });
+
+  Future<void> _checkUpdate() async {
+    if (await SettingUtils.getIsAutoUpdate()) {
+      if (context.mounted) {
+        VersionUpdateChecker(context).checkForUpdatesInBackground();
+      }
+    }
+  }
 }

@@ -4,6 +4,7 @@ import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_item_dialog.dart';
 import 'package:count_tools/page/dialog/subproject_info_setting_dialog.dart';
+import 'package:count_tools/utils/data_utils.dart';
 import 'package:count_tools/utils/safe_utils.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
@@ -13,25 +14,30 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   final SubProjectDbHelper subProjectDbHelper = SubProjectDbHelper();
 
   List<ItemData> _items = [];
+
   List<ItemData> get items => _items;
 
   List<String> _dates = [];
+
   List<String> get dates => _dates;
 
   String _cost = '';
+
   String get cost => _cost;
 
   bool _isShowPrice = true;
+
   bool get isShowPrice => _isShowPrice;
 
   bool _isQuickAdd = false;
+
   bool get isQuickAdd => _isQuickAdd;
 
   Future<void> loadItems(String parentId) async {
     await _loadShared();
     _items = await itemDBHelper.getByParent(parentId);
     _dates = _items.map((e) => e.date).toSet().toList();
-    if (_isShowPrice) loadCost();
+    loadCost();
     notifyListeners();
   }
 
@@ -69,9 +75,9 @@ class SubProjectInfoViewModel extends ChangeNotifier {
     await loadItems(datas.first.parentId);
   }
 
-  Future<void> deleteItem(String id) async {
+  Future<void> deleteItem(String id, String parentId) async {
     await itemDBHelper.delete(id);
-    await loadItems(id);
+    await loadItems(parentId);
   }
 
   Future<void> updateSubProject(SubProjectData data) async {
@@ -80,7 +86,31 @@ class SubProjectInfoViewModel extends ChangeNotifier {
     await subProjectDbHelper.update(dataUpdate);
   }
 
-  addItemDialog(BuildContext context, SubProjectData data, String id) =>
+  addItemClick(BuildContext context, SubProjectData data, String id) {
+    if (_isQuickAdd) {
+      addItem(ItemData(
+          id: generateUniqueId(),
+          price: "0",
+          eventName: "",
+          date: getCurrentDate(),
+          itemName: data.name,
+          type: "",
+          parentId: data.id,
+          projectId: id,
+          ext: ""));
+    } else {
+      addItemDialog(context, data, id);
+    }
+  }
+
+  deleteItemClick(BuildContext context, String id) =>
+      deleteItem(items.last.id, id);
+
+  addItemLongClick(BuildContext context, SubProjectData data, String id) =>
+      addItemDialog(context, data, id);
+
+  addItemDialog(
+          BuildContext context, SubProjectData data, String id) =>
       showDialog(
           context: context,
           builder: (BuildContext dialogContext) =>

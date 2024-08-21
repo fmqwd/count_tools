@@ -28,9 +28,11 @@ class _SettingPageState extends State<SettingPage> {
         const SizedBox(height: 4),
         _buildThemeChoose(),
         const SizedBox(height: 30),
-        _buildAbout(),
-        const SizedBox(height: 4),
         _buildUpdate(),
+        const SizedBox(height: 4),
+        _buildUpdateSetting(),
+        const SizedBox(height: 30),
+        _buildAbout(),
       ]);
 
   //个人信息
@@ -62,16 +64,27 @@ class _SettingPageState extends State<SettingPage> {
       ]),
       () => showAppAboutDialog(context));
 
-  //更新
+  //检查更新
   Widget _buildUpdate() => _buildSettingLine(
       Row(children: [
-        const Text('更新', style: AppTextStyle.bodyBig),
+        const Text('检查更新', style: AppTextStyle.bodyBig),
         Expanded(child: Container()),
         Text("v${AppInfo.appVersion}", style: AppTextStyle.bodyBd),
         const SizedBox(width: 8),
         const Icon(Icons.arrow_forward_ios_rounded, size: 16)
       ]),
       () => VersionUpdateChecker(context).checkForUpdates());
+
+  //更新设置
+  Widget _buildUpdateSetting() => _buildSettingLine(
+      Row(children: [
+        const Text('更新推送开关', style: AppTextStyle.bodyBig),
+        Expanded(child: Container()),
+        _autoUpdateSwitch(),
+        const SizedBox(width: 8),
+        const Icon(Icons.arrow_forward_ios_rounded, size: 16)
+      ]),
+      null);
 
   Widget _buildSettingLine(Widget child, GestureTapCallback? onTap) =>
       GestureDetector(
@@ -85,4 +98,17 @@ class _SettingPageState extends State<SettingPage> {
                 borderRadius: BorderRadius.circular(6),
               ),
               child: child));
+
+  Widget _autoUpdateSwitch() => FutureBuilder(
+      future: SettingUtils.getIsAutoUpdate(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return Switch(
+              value: snapshot.data ?? false,
+              onChanged: (value) =>
+                  setState(() => SettingUtils.setIsAutoUpdate(value)));
+        } else {
+          return const Center(child: CircularProgressIndicator());
+        }
+      });
 }

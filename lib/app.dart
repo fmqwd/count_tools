@@ -2,7 +2,6 @@ import 'package:count_tools/page/home_page/home_page.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
-import 'data/database/data_base.dart';
 
 class App extends StatefulWidget {
   const App({super.key});
@@ -19,7 +18,6 @@ class AppState extends State<App> {
     super.initState();
     _initApp();
     _loadThemeColor();
-    _initializeDatabase();
   }
 
   Future<void> _loadThemeColor() async {
@@ -27,9 +25,6 @@ class AppState extends State<App> {
     setState(() => _themeColor = color);
   }
 
-  Future<void> _initializeDatabase() async {
-    DatabaseHelper();
-  }
 
   Future<void> _initApp() async {
     if (!await SettingUtils.isNotFirstEnter()) {
@@ -37,6 +32,8 @@ class AppState extends State<App> {
       SettingUtils.setProjectInfoRowNum(5);
       SettingUtils.setProjectInfoSort('降序');
       SettingUtils.setShowMode('数量-百分比');
+      SettingUtils.setIsShowTotalPrice(true);
+      SettingUtils.setIsQuickAdd(false);
     }
   }
 

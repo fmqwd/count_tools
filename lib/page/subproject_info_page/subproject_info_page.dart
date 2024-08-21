@@ -36,11 +36,8 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
                 onPressed: () => _vm.showSettingDialog(context)),
           ]),
           body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
-          floatingActionButton: Builder(
-            builder: (context) => FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () => _vm.addItemDialog(context, widget.parentData, widget.projectId)),
-          )));
+          floatingActionButton:
+              Builder(builder: (context) => _buildFloatButton())));
 
   Widget _buildPersonInfoContent(String count) => Column(children: [
         _buildPersonInfoTitle(),
@@ -61,29 +58,64 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
       );
 
   Widget _buildPersonInfoItem() => Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        child: Consumer<SubProjectInfoViewModel>(
-            builder: (context, model, child) => Text("总计花费：${model.cost}")),
-      );
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: Consumer<SubProjectInfoViewModel>(
+        builder: (context, model, child) {
+          if (model.isShowPrice) {
+            return Text('总计花费：${model.cost}');
+          } else {
+            return const SizedBox();
+          }
+        },
+      ));
 
   Widget _buildPersonInfoList() => Container(
         margin: const EdgeInsets.symmetric(vertical: 6),
         child: Consumer<SubProjectInfoViewModel>(
           builder: (context, model, child) {
+            if (model.isQuickAdd) {
+              return _buildQuickAddInfo();
+            }
             if (model.items.isEmpty) {
               return const Center(child: Text('没有项目，点击+添加'));
             }
             return NonePaddingWidget(
-                context: context,
-                child: ListView.builder(
-                  itemCount: model.dates.length,
-                  itemBuilder: (context, index) => SingleItemWidget(
-                    date: model.dates[index],
-                    data: model.items.where((e) => e.date == model.dates[index]).toList(),
-                  ),
+              context: context,
+              child: ListView.builder(
+                itemCount: model.dates.length,
+                itemBuilder: (context, index) => SingleItemWidget(
+                  date: model.dates[index],
+                  data: model.items.where((e) => e.date == model.dates[index]).toList(),
+                ),
               ),
             );
           },
         ),
       );
+
+  Widget _buildQuickAddInfo() => Container(
+    alignment: Alignment.center,
+      margin: const EdgeInsets.symmetric(horizontal: 32),
+      child: const Text("当前为快速添加模式，点击+将直接添加一个价格为0，日期为今天的项目，点击-将减少最后添加的项目（最少为0））"));
+
+  Widget _buildFloatButton() =>
+      Consumer<SubProjectInfoViewModel>(builder: (context, model, child) {
+        if (model.isQuickAdd) {
+          return Row(mainAxisSize: MainAxisSize.min, children: [
+            FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => model.addItemClick(
+                    context, widget.parentData, widget.projectId)),
+            const SizedBox(width: 10),
+            FloatingActionButton(
+                child: const Icon(Icons.remove),
+                onPressed: () => model.deleteItemClick(context,widget.parentData.id))
+          ]);
+        } else {
+          return FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () => model.addItemDialog(
+                  context, widget.parentData, widget.projectId));
+        }
+      });
 }
