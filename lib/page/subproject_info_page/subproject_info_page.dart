@@ -85,7 +85,9 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
                 itemCount: model.dates.length,
                 itemBuilder: (context, index) => SingleItemWidget(
                   date: model.dates[index],
-                  data: model.items.where((e) => e.date == model.dates[index]).toList(),
+                  data: model.items
+                      .where((e) => e.date == model.dates[index])
+                      .toList(),
                 ),
               ),
             );
@@ -94,25 +96,30 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
       );
 
   Widget _buildQuickAddInfo() => Container(
-    alignment: Alignment.center,
+      alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 32),
-      child: const Text("当前为快速添加模式，点击+将直接添加一个价格为0，日期为今天的项目，点击-将减少最后添加的项目（最少为0））"));
+      child:
+          const Text("当前为快速添加模式，点击+将直接添加一个价格为0，日期为今天的项目，点击-将减少最后添加的项目（最少为0））"));
 
   Widget _buildFloatButton() =>
       Consumer<SubProjectInfoViewModel>(builder: (context, model, child) {
         if (model.isQuickAdd) {
           return Row(mainAxisSize: MainAxisSize.min, children: [
             FloatingActionButton(
+                key: const Key('item_add'),
                 child: const Icon(Icons.add),
                 onPressed: () => model.addItemClick(
                     context, widget.parentData, widget.projectId)),
             const SizedBox(width: 10),
             FloatingActionButton(
+                key: const Key('item_delete'),
                 child: const Icon(Icons.remove),
-                onPressed: () => model.deleteItemClick(context,widget.parentData.id))
+                onPressed: () =>
+                    model.deleteItemClick(context, widget.parentData)),
           ]);
         } else {
           return FloatingActionButton(
+              key: const Key('item_add_single'),
               child: const Icon(Icons.add),
               onPressed: () => model.addItemDialog(
                   context, widget.parentData, widget.projectId));

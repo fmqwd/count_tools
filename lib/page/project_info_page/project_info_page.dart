@@ -38,6 +38,7 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           body: Center(child: _buildProjectInfoContent()),
           floatingActionButton: Builder(
               builder: (context) => FloatingActionButton(
+                  key: const Key('subproject_add'),
                   child: const Icon(Icons.add),
                   onPressed: () =>
                       _vm.addSubProjectDialog(context, widget.parentData)))));
