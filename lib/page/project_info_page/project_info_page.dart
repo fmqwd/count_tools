@@ -38,7 +38,6 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           body: Center(child: _buildProjectInfoContent()),
           floatingActionButton: Builder(
               builder: (context) => FloatingActionButton(
-                  key: const Key('subproject_add'),
                   child: const Icon(Icons.add),
                   onPressed: () =>
                       _vm.addSubProjectDialog(context, widget.parentData)))));
@@ -49,38 +48,39 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
       ]);
 
   Widget _buildProjectInfoTitle() => Consumer<ProjectInfoViewModel>(
-      builder: (context, model, child) => Container(
+      builder: (_, vm, __) => Container(
           margin: const EdgeInsets.symmetric(vertical: 10),
           width: double.infinity,
           alignment: Alignment.center,
-          child: Text(
-              "当前项目总计${model.subProjects.length}项，${model.items.length}张",
+          child: Text("当前项目总计${vm.subProjects.length}项，${vm.items.length}张",
               style: AppTextStyle.heading3)));
 
   Widget _buildProjectInfoWidget() => Consumer<ProjectInfoViewModel>(
-      builder: (context, model, child) => Container(
-          margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
-          child: model.subProjects.isEmpty
+      builder: (context, vm, _) => Container(
+          margin: const EdgeInsets.all(6),
+          child: vm.subProjects.isEmpty
               ? const Center(child: Text('没有项目，点击+添加'))
               : NonePaddingWidget(
                   context: context,
                   child: _buildProjectInfoList(
                       context,
-                      model.subProjects,
-                      model.ranking,
-                      model.pushToSubProjectPage,
-                      model.longClickSubProjectDialog,
-                      model.getCountPercentage))));
+                      vm.subProjects,
+                      vm.ranking,
+                      vm.pushToSubProjectPage,
+                      vm.longClickSubProjectDialog,
+                      vm.getCountPercentage))));
 
   // 构建项目列表
   Widget _buildProjectInfoList(
-          BuildContext context,
-          List<SubProjectData> subProjects,
-          List<String> ranking,
-          Function(BuildContext, SubProjectData, String) pushToSubProjectPage,
-          Function(BuildContext, SubProjectData) longClickSubProjectDialog,
-          Function(String) getCountPercentage) =>
-      GridView.builder(
+    BuildContext context,
+    List<SubProjectData> subProjects,
+    List<String> ranking,
+    Function(BuildContext, SubProjectData, String) pushToSubProjectPage,
+    Function(BuildContext, SubProjectData) longClickSubProjectDialog,
+    Function(String) getCountPercentage,
+  ) => RefreshIndicator(
+      onRefresh: _vm.loadSubProjects,
+      child: GridView.builder(
           itemCount: subProjects.length,
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: _vm.row,
@@ -96,5 +96,5 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
               textColor: parseColor(subProjects[index].textColor),
               countPercent: getCountPercentage(subProjects[index].count),
               onLongClick: () => longClickSubProjectDialog(context, subProjects[index]),
-              onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id)));
+              onClick: () => pushToSubProjectPage(context, subProjects[index], widget.parentData.id))));
 }

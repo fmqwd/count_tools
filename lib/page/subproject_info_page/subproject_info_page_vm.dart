@@ -4,12 +4,10 @@ import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/dialog/add_item_dialog.dart';
 import 'package:count_tools/page/dialog/subproject_info_setting_dialog.dart';
-import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/data_utils.dart';
 import 'package:count_tools/utils/safe_utils.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class SubProjectInfoViewModel extends ChangeNotifier {
   final ItemDBHelper itemDBHelper = ItemDBHelper();
@@ -116,8 +114,12 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   addItemLongClick(BuildContext context, SubProjectData data, String id) =>
       addItemDialog(context, data, id);
 
-  addItemDialog(BuildContext context, SubProjectData data, String id) =>
-          showAddItemDialog(context, data, id);
+  addItemDialog(
+      BuildContext context, SubProjectData data, String id) =>
+      showDialog(
+          context: context,
+          builder: (BuildContext dialogContext) =>
+              buildAddItemDialog(context, dialogContext, data, id));
 
   showSettingDialog(BuildContext context) =>
       showSubProjectInfoSettingDialog(context, () => _loadShared());

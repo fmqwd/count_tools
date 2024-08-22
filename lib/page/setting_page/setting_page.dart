@@ -15,6 +15,19 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  final ValueNotifier<bool> _isAutoUpdate = ValueNotifier<bool>(false);
+
+  @override
+  void initState() {
+    super.initState();
+    _loadInitialState();
+  }
+
+  Future<void> _loadInitialState() async {
+    bool initialValue = await SettingUtils.getIsAutoUpdate();
+    _isAutoUpdate.value = initialValue;
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
         backgroundColor: const Color(0xFFF2F3F5),
@@ -99,16 +112,12 @@ class _SettingPageState extends State<SettingPage> {
               ),
               child: child));
 
-  Widget _autoUpdateSwitch() => FutureBuilder(
-      future: SettingUtils.getIsAutoUpdate(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return Switch(
-              value: snapshot.data ?? false,
-              onChanged: (value) =>
-                  setState(() => SettingUtils.setIsAutoUpdate(value)));
-        } else {
-          return const Center(child: CircularProgressIndicator());
-        }
-      });
+  Widget _autoUpdateSwitch() => ValueListenableBuilder<bool>(
+      valueListenable: _isAutoUpdate,
+      builder: (context, isAutoUpdate, child) => Switch(
+          value: isAutoUpdate,
+          onChanged: (value) async {
+            await SettingUtils.setIsAutoUpdate(value);
+            _isAutoUpdate.value = value;
+          }));
 }

@@ -5,14 +5,6 @@ import 'package:count_tools/utils/data_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
-void showAddItemDialog(BuildContext context, SubProjectData parentData, String projectId) {
-  showDialog(
-      context: context,
-      builder: (context) =>
-          buildAddItemDialog(context, context, parentData, projectId));
-}
-
 Widget buildAddItemDialog(
   BuildContext context,
   BuildContext dialogContext,
@@ -63,7 +55,7 @@ Widget buildAddItemDialog(
             return;
           }
 
-          Provider.of<SubProjectInfoViewModel>(context, listen: false).addItems(
+          Provider.of<SubProjectInfoViewModel>(dialogContext, listen: false).addItems(
               List.generate(
                   num,
                   (index) => ItemData(

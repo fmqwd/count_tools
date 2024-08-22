@@ -36,8 +36,12 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
                 onPressed: () => _vm.showSettingDialog(context)),
           ]),
           body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
-          floatingActionButton:
-              Builder(builder: (context) => _buildFloatButton())));
+          floatingActionButton: Builder(
+            builder: (context) => FloatingActionButton(
+                child: const Icon(Icons.add),
+                onPressed: () => _vm.addItemClick(
+                    context, widget.parentData, widget.projectId)),
+          )));
 
   Widget _buildPersonInfoContent(String count) => Column(children: [
         _buildPersonInfoTitle(),
@@ -46,83 +50,73 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
       ]);
 
   Widget _buildPersonInfoTitle() => Container(
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        width: double.infinity,
-        alignment: Alignment.center,
-        child: Consumer<SubProjectInfoViewModel>(
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      width: double.infinity,
+      alignment: Alignment.center,
+      child: Consumer<SubProjectInfoViewModel>(
           builder: (context, model, child) => Text(
-            "当前项目总计：${model.items.length}",
-            style: const TextStyle(fontSize: 20),
-          ),
-        ),
-      );
+              "当前项目总计：${model.items.length}",
+              style: const TextStyle(fontSize: 20))));
 
   Widget _buildPersonInfoItem() => Container(
       margin: const EdgeInsets.symmetric(vertical: 6),
-      child: Consumer<SubProjectInfoViewModel>(
-        builder: (context, model, child) {
-          if (model.isShowPrice) {
-            return Text('总计花费：${model.cost}');
-          } else {
-            return const SizedBox();
-          }
-        },
-      ));
+      child: Consumer<SubProjectInfoViewModel>(builder: (_, vm, __) {
+        if (vm.isShowPrice) {
+          return Text('总计花费：${vm.cost}');
+        } else {
+          return const SizedBox();
+        }
+      }));
 
   Widget _buildPersonInfoList() => Container(
-        margin: const EdgeInsets.symmetric(vertical: 6),
-        child: Consumer<SubProjectInfoViewModel>(
-          builder: (context, model, child) {
-            if (model.isQuickAdd) {
-              return _buildQuickAddInfo();
-            }
-            if (model.items.isEmpty) {
-              return const Center(child: Text('没有项目，点击+添加'));
-            }
-            return NonePaddingWidget(
-              context: context,
-              child: ListView.builder(
-                itemCount: model.dates.length,
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      child: Consumer<SubProjectInfoViewModel>(builder: (context, vm, _) {
+        if (vm.isQuickAdd) {
+          return Column(children: [
+            _buildQuickInfo(),
+            const SizedBox(height: 50),
+            _buildQuickButton()
+          ]);
+        }
+        if (vm.items.isEmpty) {
+          return const Center(child: Text('没有项目，点击+添加'));
+        }
+        return NonePaddingWidget(
+            context: context,
+            child: ListView.builder(
+                itemCount: vm.dates.length,
                 itemBuilder: (context, index) => SingleItemWidget(
-                  date: model.dates[index],
-                  data: model.items
-                      .where((e) => e.date == model.dates[index])
-                      .toList(),
-                ),
-              ),
-            );
-          },
-        ),
-      );
+                    date: vm.dates[index],
+                    data: vm.items
+                        .where((e) => e.date == vm.dates[index])
+                        .toList())));
+      }));
 
-  Widget _buildQuickAddInfo() => Container(
+  Widget _buildQuickInfo() => Container(
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 32),
       child:
           const Text("当前为快速添加模式，点击+将直接添加一个价格为0，日期为今天的项目，点击-将减少最后添加的项目（最少为0））"));
 
-  Widget _buildFloatButton() =>
-      Consumer<SubProjectInfoViewModel>(builder: (context, model, child) {
-        if (model.isQuickAdd) {
-          return Row(mainAxisSize: MainAxisSize.min, children: [
-            FloatingActionButton(
-                key: const Key('item_add'),
-                child: const Icon(Icons.add),
-                onPressed: () => model.addItemClick(
-                    context, widget.parentData, widget.projectId)),
-            const SizedBox(width: 10),
-            FloatingActionButton(
-                key: const Key('item_delete'),
-                child: const Icon(Icons.remove),
-                onPressed: () =>
-                    model.deleteItemClick(context, widget.parentData)),
-          ]);
-        } else {
-          return FloatingActionButton(
-              key: const Key('item_add_single'),
-              child: const Icon(Icons.add),
-              onPressed: () => model.addItemDialog(
-                  context, widget.parentData, widget.projectId));
-        }
-      });
+  Widget _buildQuickButton() => Consumer<SubProjectInfoViewModel>(
+      builder: (context, vm, _) => vm.isQuickAdd
+          ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              GestureDetector(
+                  child: Container(
+                      width: 50,
+                      height: 40,
+                      alignment: Alignment.center,
+                      color: Colors.blue,
+                      child: const Icon(Icons.add)),
+                  onTap: () => vm.addItemClick(context, widget.parentData, widget.projectId)),
+              GestureDetector(
+                  child: Container(
+                      width: 50,
+                      height: 40,
+                      alignment: Alignment.center,
+                      color: Colors.cyan,
+                      child: const Icon(Icons.remove)),
+                  onTap: () => vm.deleteItemClick(context, widget.parentData))
+            ])
+          : const SizedBox());
 }

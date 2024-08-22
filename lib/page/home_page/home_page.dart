@@ -38,26 +38,26 @@ class _HomePageState extends State<HomePage> {
           body: Center(child: _buildHomePageProjectList()),
           floatingActionButton: Builder(
               builder: (context) => FloatingActionButton(
+                key: const Key('add_project_btn'),
                   child: const Icon(Icons.add),
                   onPressed: () => _vm.addProjectDialog(context)))));
 
   Widget _buildHomePageProjectList() =>
-      Consumer<HomePageViewModel>(builder: (context, model, child) {
-        if (model.projects.isEmpty) {
+      Consumer<HomePageViewModel>(builder: (context, vm, __) {
+        if (vm.projects.isEmpty) {
           return const Center(child: Text('没有项目，点击+添加'));
         }
         return NonePaddingWidget(
             context: context,
-            child: ListView.builder(
-                itemCount: model.projects.length,
-                itemBuilder: (context, index) => SingleProjectWidget(
-                    project: model.projects[index],
-                    onDelete: () => model.delProjectDialog(
-                        context, model.projects[index].id),
-                    onClick: () => model.pushProjectInfoPage(
-                        context, model.projects[index]),
-                    onEdit: () => model.editProjectDialog(
-                        context, model.projects[index]))));
+            child: RefreshIndicator(
+                onRefresh: _vm.loadProjects,
+                child: ListView.builder(
+                    itemCount: vm.projects.length,
+                    itemBuilder: (context, index) => SingleProjectWidget(
+                        project: vm.projects[index],
+                        onDelete: () => vm.delProjectDialog(context, vm.projects[index].id),
+                        onClick: () => vm.pushProjectInfoPage(context, vm.projects[index]),
+                        onEdit: () => vm.editProjectDialog(context, vm.projects[index])))));
       });
 
   Future<void> _checkUpdate() async {
