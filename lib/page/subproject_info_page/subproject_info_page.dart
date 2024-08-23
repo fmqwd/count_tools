@@ -1,8 +1,13 @@
+import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
 import 'package:count_tools/page/component/single_item_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page_vm.dart';
+import 'package:count_tools/utils/data_utils.dart';
+import 'package:count_tools/utils/safe_utils.dart';
+import 'package:count_tools/value/style/text_style.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:provider/provider.dart';
 
 class SubProjectInfoPage extends StatefulWidget {
@@ -20,9 +25,20 @@ class SubProjectInfoPage extends StatefulWidget {
 class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
   late SubProjectInfoViewModel _vm;
 
+  TextEditingController dateCon = TextEditingController();
+  TextEditingController priceCon = TextEditingController();
+  TextEditingController countCon = TextEditingController();
+  TextEditingController eventCon = TextEditingController();
+  TextEditingController typeCon = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+    dateCon.text = getCurrentDate();
+    priceCon.text = '0';
+    countCon.text = '1';
+    eventCon.text = '';
+    typeCon.text = '';
     _vm = SubProjectInfoViewModel()..loadItems(widget.parentData.id);
   }
 
@@ -33,90 +49,111 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
           appBar: AppBar(title: Text(widget.parentData.name), actions: [
             IconButton(
                 icon: const Icon(Icons.settings),
-                onPressed: () => _vm.showSettingDialog(context)),
+                onPressed: () => _vm.showSettingDialog(context))
           ]),
-          body: Center(child: _buildPersonInfoContent(widget.parentData.count)),
-          floatingActionButton: Builder(
-            builder: (context) => FloatingActionButton(
-                child: const Icon(Icons.add),
-                onPressed: () => _vm.addItemClick(
-                    context, widget.parentData, widget.projectId)),
-          )));
+          body: Center(child: _buildSubProjectContent())));
 
-  Widget _buildPersonInfoContent(String count) => Column(children: [
-        _buildPersonInfoTitle(),
-        if (_vm.isShowPrice) _buildPersonInfoItem(),
-        Expanded(child: _buildPersonInfoList())
-      ]);
-
-  Widget _buildPersonInfoTitle() => Container(
-      margin: const EdgeInsets.symmetric(vertical: 10),
+  Widget _buildSubProjectContent() => Container(
+      alignment: Alignment.center,
       width: double.infinity,
-      alignment: Alignment.center,
-      child: Consumer<SubProjectInfoViewModel>(
-          builder: (context, model, child) => Text(
-              "当前项目总计：${model.items.length}",
-              style: const TextStyle(fontSize: 20))));
+      child: ListView(children: [
+        const SizedBox(height: 16),
+        Center(child: _buildSum()),
+        const SizedBox(height: 8),
+        Center(child: _buildCost()),
+        const SizedBox(height: 32),
+        _buildItem(),
+        _buildButtons(),
+        const SizedBox(height: 32),
+        _buildAddInfoList()
+      ]));
 
-  Widget _buildPersonInfoItem() => Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      child: Consumer<SubProjectInfoViewModel>(builder: (_, vm, __) {
-        if (vm.isShowPrice) {
-          return Text('总计花费：${vm.cost}');
-        } else {
-          return const SizedBox();
-        }
-      }));
+  Widget _buildSum() => Consumer<SubProjectInfoViewModel>(
+      builder: (__, vm, _) =>
+          Text('当前项目总计：${vm.items.length}', style: AppTextStyle.heading3));
 
-  Widget _buildPersonInfoList() => Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      child: Consumer<SubProjectInfoViewModel>(builder: (context, vm, _) {
-        if (vm.isQuickAdd) {
-          return Column(children: [
-            _buildQuickInfo(),
-            const SizedBox(height: 50),
-            _buildQuickButton()
-          ]);
-        }
-        if (vm.items.isEmpty) {
-          return const Center(child: Text('没有项目，点击+添加'));
-        }
-        return NonePaddingWidget(
-            context: context,
-            child: ListView.builder(
-                itemCount: vm.dates.length,
-                itemBuilder: (context, index) => SingleItemWidget(
-                    date: vm.dates[index],
-                    data: vm.items
-                        .where((e) => e.date == vm.dates[index])
-                        .toList())));
-      }));
+  Widget _buildCost() => Consumer<SubProjectInfoViewModel>(
+      builder: (__, vm, _) =>
+          vm.isShowPrice ? Text('总计花费：${vm.cost}') : const SizedBox());
 
-  Widget _buildQuickInfo() => Container(
-      alignment: Alignment.center,
+  Widget _buildItem() => Container(
       margin: const EdgeInsets.symmetric(horizontal: 32),
-      child:
-          const Text("当前为快速添加模式，点击+将直接添加一个价格为0，日期为今天的项目，点击-将减少最后添加的项目（最少为0））"));
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        TextField(
+            controller: dateCon,
+            decoration: InputDecoration(
+                labelText: "请输入日期（必填，点击图标可展开日历）",
+                suffixIcon: GestureDetector(
+                    onTap: () => DatePicker.showDatePicker(context,
+                        showTitleActions: true,
+                        minTime: DateTime(2000, 1, 1),
+                        maxTime: DateTime(2100, 12, 31),
+                        onConfirm: (date) => dateCon.text = formatDate(date),
+                        currentTime: DateTime.now(),
+                        locale: LocaleType.zh),
+                    child: const Icon(Icons.calendar_month)))),
+        TextField(
+            controller: eventCon,
+            decoration: const InputDecoration(
+                labelText: "请输入活动名（可选）", suffixIcon: Icon(Icons.event_note))),
+        TextField(
+            controller: priceCon,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+                labelText: "请输入单张价格（可选）", suffixIcon: Icon(Icons.money))),
+        TextField(
+            controller: countCon,
+            keyboardType: TextInputType.number,
+            decoration: const InputDecoration(
+                labelText: "请输入张数（必填）", suffixIcon: Icon(Icons.numbers))),
+        TextField(
+            controller: typeCon,
+            decoration: const InputDecoration(
+                labelText: "请输入类型（有无签、宿题等）（可选）", suffixIcon: Icon(Icons.type_specimen_outlined))),
+        const SizedBox(height: 30)
+      ]));
 
-  Widget _buildQuickButton() => Consumer<SubProjectInfoViewModel>(
-      builder: (context, vm, _) => vm.isQuickAdd
-          ? Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-              GestureDetector(
-                  child: Container(
-                      width: 50,
-                      height: 40,
-                      alignment: Alignment.center,
-                      color: Colors.blue,
-                      child: const Icon(Icons.add)),
-                  onTap: () => vm.addItemClick(context, widget.parentData, widget.projectId)),
-              GestureDetector(
-                  child: Container(
-                      width: 50,
-                      height: 40,
-                      alignment: Alignment.center,
-                      color: Colors.cyan,
-                      child: const Icon(Icons.remove)),
-                  onTap: () => vm.deleteItemClick(context, widget.parentData))
-            ])
-          : const SizedBox());
+  Widget _buildButtons() => Consumer<SubProjectInfoViewModel>(
+      builder: (context, vm, _) =>
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+            _buildButton(() => _onAddClickListener(vm, context), true),
+            _buildButton(() => vm.deleteItemClick(context, widget.parentData), false)
+          ]));
+
+  void _onAddClickListener(vm, context) async {
+    vm.addItemClick(
+        widget.parentData,
+        safeInt(countCon.text, defaultValue: 1),
+        ItemData(
+            date: dateCon.text,
+            price: priceCon.text,
+            type: typeCon.text,
+            id: '',
+            eventName: eventCon.text,
+            itemName: widget.parentData.name,
+            parentId: widget.parentData.id,
+            projectId: widget.projectId,
+            ext: ''),
+        context);
+  }
+
+  Widget _buildButton(GestureTapCallback? onTap, bool left) => GestureDetector(
+      onTap: onTap,
+      child: Container(
+          width: 50,
+          height: 40,
+          alignment: Alignment.center,
+          color: left ? Colors.blue : Colors.cyan,
+          child: left ? const Icon(Icons.add) : const Icon(Icons.remove)));
+
+  Widget _buildAddInfoList() => Consumer<SubProjectInfoViewModel>(
+      builder: (context, vm, child) => NonePaddingWidget(
+          context: context,
+          child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: vm.dates.length,
+              itemBuilder: (context, index) => SingleItemWidget(
+                  date: vm.dates[index],
+                  data: vm.items.where((e) => e.date == vm.dates[index]).toList()))));
 }

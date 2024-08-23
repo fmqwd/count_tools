@@ -32,7 +32,7 @@ class SettingDialog extends StatefulWidget {
 }
 
 class SettingDialogState extends State<SettingDialog> {
-  final List<int> rowOptions = [4, 5, 6];
+  final List<int> rowOptions = [2, 3, 4, 5, 6, 7];
   final List<String> orderOptions = ['升序', '降序'];
   final List<String> displayOptions = ['数量-百分比', '排名-百分比', '排名-数量', '仅排名', '仅百分比', '仅数量'];
 

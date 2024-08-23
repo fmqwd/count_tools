@@ -1,4 +1,4 @@
-import 'package:count_tools/data/database/data_base.dart';
+import  'package:count_tools/data/database/data_base.dart';
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -24,27 +24,33 @@ class ItemDBHelper {
     );
   }
 
-  Future<void> insertAll(List<ItemData> data) async {
+  Future<void> insertItems(List<ItemData> data, {int chunkSize = 1000}) async {
     final db = await _databaseHelper.database;
-    await db.transaction((txn) async {
-      for (var item in data) {
-        await txn.insert(
-          'item_data',
-          {
-            'id': item.id,
-            'price': item.price,
-            'eventName': item.eventName,
-            'type': item.type,
-            'date': item.date,
-            'itemName': item.itemName,
-            'parentId': item.parentId,
-            'projectId': item.projectId,
-            'ext': item.ext,
-          },
-          conflictAlgorithm: ConflictAlgorithm.replace,
-        );
-      }
-    });
+    for (int i = 0; i < data.length; i += chunkSize) {
+      int end = (i + chunkSize < data.length) ? i + chunkSize : data.length;
+      final chunk = data.sublist(i, end);
+      await db.transaction((txn) async {
+        final batch = txn.batch();
+        await Future.delayed(const Duration(milliseconds: 10));
+        for (var item in chunk) {
+          batch.insert(
+            'item_data',
+            {
+              'price': item.price,
+              'eventName': item.eventName,
+              'type': item.type,
+              'date': item.date,
+              'itemName': item.itemName,
+              'parentId': item.parentId,
+              'projectId': item.projectId,
+              'ext': item.ext
+            },
+            conflictAlgorithm: ConflictAlgorithm.replace,
+          );
+        }
+        await batch.commit(noResult: true);
+      });
+    }
   }
 
   Future<List<ItemData>> get() async {

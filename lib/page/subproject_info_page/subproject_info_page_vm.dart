@@ -2,9 +2,8 @@ import 'package:count_tools/data/database/helper/item_helper.dart';
 import 'package:count_tools/data/database/helper/sub_project_helper.dart';
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
-import 'package:count_tools/page/dialog/add_item_dialog.dart';
+import 'package:count_tools/page/dialog/loading_dialog.dart';
 import 'package:count_tools/page/dialog/subproject_info_setting_dialog.dart';
-import 'package:count_tools/utils/data_utils.dart';
 import 'package:count_tools/utils/safe_utils.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
@@ -14,24 +13,17 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   final SubProjectDbHelper subProjectDbHelper = SubProjectDbHelper();
 
   List<ItemData> _items = [];
-
   List<ItemData> get items => _items;
 
   List<String> _dates = [];
-
   List<String> get dates => _dates;
 
   String _cost = '';
-
   String get cost => _cost;
 
   bool _isShowPrice = true;
-
   bool get isShowPrice => _isShowPrice;
 
-  bool _isQuickAdd = false;
-
-  bool get isQuickAdd => _isQuickAdd;
 
   Future<void> loadItems(String parentId) async {
     await _loadShared();
@@ -43,7 +35,6 @@ class SubProjectInfoViewModel extends ChangeNotifier {
 
   Future<void> _loadShared() async {
     _isShowPrice = await SettingUtils.getIsShowTotalPrice();
-    _isQuickAdd = await SettingUtils.getIsQuickAdd();
     notifyListeners();
   }
 
@@ -61,7 +52,7 @@ class SubProjectInfoViewModel extends ChangeNotifier {
   }
 
   Future<void> addItems(List<ItemData> datas) async {
-    await itemDBHelper.insertAll(datas);
+    await itemDBHelper.insertItems(datas);
     await loadItems(datas.first.parentId);
   }
 
@@ -86,21 +77,26 @@ class SubProjectInfoViewModel extends ChangeNotifier {
     await subProjectDbHelper.update(dataUpdate);
   }
 
-  addItemClick(BuildContext context, SubProjectData data, String id) {
-    if (_isQuickAdd) {
-      addItem(ItemData(
-          id: generateUniqueId(),
-          price: "0",
-          eventName: "",
-          date: getCurrentDate(),
-          itemName: data.name,
-          type: "",
-          parentId: data.id,
-          projectId: id,
-          ext: ""));
-      updateSubProject(data);
+  Future<void> addItemClickLess(data,index,item,context) async {
+    final List<ItemData> items = List.generate(index, (_) => item);
+    await addItems(items);
+    await updateSubProject(data);
+  }
+
+  Future<void> addItemClick(data, index, item, context) async {
+    if (index <= 100) {
+      addItemClickLess(data, index, item, context);
     } else {
-      addItemDialog(context, data, id);
+      showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const UpdatingProgressDialog("插入数据中……"));
+      final List<ItemData> items = List.generate(index, (_) => item);
+      await addItems(items);
+      await updateSubProject(data);
+      if (context.mounted) {
+        Navigator.of(context).pop();
+      }
     }
   }
 
@@ -110,16 +106,6 @@ class SubProjectInfoViewModel extends ChangeNotifier {
       updateSubProject(data);
     }
   }
-
-  addItemLongClick(BuildContext context, SubProjectData data, String id) =>
-      addItemDialog(context, data, id);
-
-  addItemDialog(
-      BuildContext context, SubProjectData data, String id) =>
-      showDialog(
-          context: context,
-          builder: (BuildContext dialogContext) =>
-              buildAddItemDialog(context, dialogContext, data, id));
 
   showSettingDialog(BuildContext context) =>
       showSubProjectInfoSettingDialog(context, () => _loadShared());

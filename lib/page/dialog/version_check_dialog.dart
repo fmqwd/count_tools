@@ -7,6 +7,8 @@ import 'package:count_tools/value/url.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
 
+import 'loading_dialog.dart';
+
 class VersionUpdateChecker {
   final BuildContext context;
 
@@ -26,16 +28,9 @@ class VersionUpdateChecker {
 
     if (showProgress) {
       showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-          content: Row(children: const [
-            CircularProgressIndicator(),
-            SizedBox(width: 20),
-            Text("检查更新...")
-          ]),
-        ),
-      );
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => const UpdatingProgressDialog("检查更新……"));
     }
 
     try {

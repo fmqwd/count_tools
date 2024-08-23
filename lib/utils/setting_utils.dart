@@ -105,14 +105,6 @@ class SettingUtils {
   static Future<void> setShowMode(String showMode) async =>
       await SharedUtils.setString("showMode", showMode);
 
-  //设置是否快速添加
-  static Future<void> setIsQuickAdd(bool isQuickAdd) async =>
-      await SharedUtils.setBool("isQuickAdd", isQuickAdd);
-
-  //获取是否快速添加
-  static Future<bool> getIsQuickAdd() async =>
-      await SharedUtils.getBool("isQuickAdd");
-
   //设置是否显示总价
   static Future<void> setIsShowTotalPrice(bool isShowTotalPrice) async =>
       await SharedUtils.setBool("isShowTotalPrice", isShowTotalPrice);
@@ -129,13 +121,6 @@ class SettingUtils {
   static Future<bool> getIsAutoUpdate() async =>
       await SharedUtils.getBool("isAutoUpdate");
 
-  //设置最后提示更新的日期
-  static Future<void> setLastUpdateDate(String lastUpdateDate) async =>
-      await SharedUtils.setString("lastUpdateDate", lastUpdateDate);
-
-  //获取最后提示更新的日期
-  static Future<String> getLastUpdateDate() async =>
-      await SharedUtils.getString("lastUpdateDate");
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(

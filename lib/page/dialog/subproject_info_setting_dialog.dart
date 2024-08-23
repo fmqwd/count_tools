@@ -13,10 +13,8 @@ void showSubProjectInfoSettingDialog(
   }
 }
 
-Future<Map<String, bool>> _loadSettings() async => {
-      "isQuickAdd": await SettingUtils.getIsQuickAdd(),
-      "isShowTotalPrice": await SettingUtils.getIsShowTotalPrice()
-    };
+Future<Map<String, bool>> _loadSettings() async =>
+    {"isShowTotalPrice": await SettingUtils.getIsShowTotalPrice()};
 
 class SettingDialog extends StatefulWidget {
   final void Function() callback;
@@ -47,10 +45,7 @@ class SettingDialogState extends State<SettingDialog> {
           content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildSwitch('是否开启快速添加？', 'isQuickAdd', false),
-                _buildSwitch('是否显示总共花费', 'isShowTotalPrice', true),
-              ]),
+              children: [_buildSwitch('是否显示总共花费', 'isShowTotalPrice', true)]),
           actions: [
             TextButton(
                 child: const Text('取消'), onPressed: () => Navigator.of(context).pop()),
@@ -69,7 +64,6 @@ class SettingDialogState extends State<SettingDialog> {
           ]);
 
   void _saveSettings() {
-    SettingUtils.setIsQuickAdd(safeBool(settings['isQuickAdd']));
     SettingUtils.setIsShowTotalPrice(safeBool(settings['isShowTotalPrice']));
     widget.callback();
     Navigator.of(context).pop();

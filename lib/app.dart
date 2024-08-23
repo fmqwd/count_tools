@@ -33,7 +33,6 @@ class AppState extends State<App> {
       SettingUtils.setProjectInfoSort('降序');
       SettingUtils.setShowMode('数量-百分比');
       SettingUtils.setIsShowTotalPrice(true);
-      SettingUtils.setIsQuickAdd(false);
     }
   }
 

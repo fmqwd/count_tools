@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:intl/intl.dart';
+
 /// 生成唯一ID
 String generateUniqueId() {
   // 获取当前时间戳（毫秒）
@@ -15,10 +17,7 @@ String generateUniqueId() {
 }
 
 //获取当前日期，2024-01-01 格式
-String getCurrentDate() {
-  DateTime now = DateTime.now();
-  String year = now.year.toString();
-  String month = now.month.toString().padLeft(2, '0');
-  String day = now.day.toString().padLeft(2, '0');
-  return '$year-$month-$day';
-}
+String getCurrentDate() => DateFormat('yyyy-MM-dd').format(DateTime.now());
+
+//格式化时间-Date=>2024-01-01
+String formatDate(DateTime dateTime) => DateFormat('yyyy-MM-dd').format(dateTime);
