@@ -4,6 +4,7 @@ import 'package:count_tools/data/database/helper/sub_project_helper.dart';
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
+import 'package:count_tools/page/count_page/count_page.dart';
 import 'package:count_tools/page/dialog/add_subproject_dialog.dart';
 import 'package:count_tools/page/dialog/long_click_subproject_dialog.dart';
 import 'package:count_tools/page/dialog/project_info_setting_dialog.dart';
@@ -112,6 +113,9 @@ class ProjectInfoViewModel extends ChangeNotifier {
 
   pushToSubProjectPage(BuildContext context, SubProjectData data, String id) =>
       RouteUtils.pushAnim(context, SubProjectInfoPage(parentData: data, projectId: id));
+
+  pushToCountPage(BuildContext context, String id) =>
+      RouteUtils.pushAnim(context, CountPage(id: id));
 
   addSubProjectDialog(BuildContext context, ProjectData data) => showDialog(
       context: context,

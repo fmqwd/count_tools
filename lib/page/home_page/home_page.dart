@@ -1,4 +1,4 @@
-import 'package:count_tools/page/component/single_project_widget.dart';
+import 'package:count_tools/page/component/list_item/single_project_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:count_tools/page/dialog/version_check_dialog.dart';
 import 'package:count_tools/utils/setting_utils.dart';

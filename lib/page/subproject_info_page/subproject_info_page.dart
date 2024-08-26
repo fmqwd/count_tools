@@ -1,6 +1,6 @@
 import 'package:count_tools/data/model/item_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
-import 'package:count_tools/page/component/single_item_widget.dart';
+import 'package:count_tools/page/component/list_item/single_item_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:count_tools/page/subproject_info_page/subproject_info_page_vm.dart';
 import 'package:count_tools/utils/data_utils.dart';

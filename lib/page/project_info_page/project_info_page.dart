@@ -1,6 +1,6 @@
 import 'package:count_tools/data/model/project_data.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
-import 'package:count_tools/page/component/single_subproject_widget.dart';
+import 'package:count_tools/page/component/list_item/single_subproject_widget.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:count_tools/page/project_info_page/project_info_page_vm.dart';
 import 'package:count_tools/utils/ui_utils.dart';
@@ -33,7 +33,11 @@ class _ProjectInfoPageState extends State<ProjectInfoPage> {
           appBar: AppBar(title: Text(widget.parentData.title), actions: [
             IconButton(
                 icon: const Icon(Icons.settings),
-                onPressed: () => _vm.showProjectSettingDialog(context))
+                onPressed: () => _vm.showProjectSettingDialog(context)),
+            IconButton(
+                icon: const Icon(Icons.stacked_bar_chart),
+                onPressed: () =>
+                    _vm.pushToCountPage(context, widget.parentData.id))
           ]),
           body: Center(child: _buildProjectInfoContent()),
           floatingActionButton: Builder(
