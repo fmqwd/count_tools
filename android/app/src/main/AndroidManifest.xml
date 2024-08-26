@@ -2,7 +2,7 @@
     package="com.example.count_tools">
     <uses-permission android:name="android.permission.INTERNET" />
    <application
-        android:label="count_tools"
+        android:label="统计工具"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

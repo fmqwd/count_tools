@@ -65,3 +65,10 @@ Color parseColor(
 String intColorToHex(Color color) {
   return '#${color.value.toRadixString(16).substring(2, 8)}'; // 提取 rgb 部分
 }
+
+//根据颜色亮度返回对应的文字颜色（黑或白）
+Color getTextColor(Color color) =>
+    ((color.red * 299 + color.green * 587 + color.blue * 114) / 1000).round() >
+            128
+        ? Colors.black
+        : Colors.white;

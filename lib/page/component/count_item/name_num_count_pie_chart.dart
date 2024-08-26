@@ -21,18 +21,24 @@ class NameNumPieChartSample extends StatelessWidget {
           domainFn: (s, _) => s.color.toString(),
           colorFn: (s, _) => ch.ColorUtil.fromDartColor(s.color),
           data: (data
-              .map((e) => CountItemData(parseColor(e.color), e.name,
-                  (safeInt(e.count) / count) * 100, safeInt(e.count)))
+              .map((e) => CountItemData(
+                    parseColor(e.color),
+                    e.name,
+                    (safeInt(e.count) / count) * 100,
+                    safeInt(e.count),
+                  ))
               .toList()),
           labelAccessorFn: (s, _) => '${s.percent.toStringAsFixed(2)}%',
+          insideLabelStyleAccessorFn: (s, _) => ch.TextStyleSpec(
+              color: ch.ColorUtil.fromDartColor(getTextColor(s.color))),
         )
       ];
 
   @override
-  Widget build(BuildContext context) => SizedBox(
-      height: height,
-      child: Column(children: [
-        Expanded(
+  Widget build(BuildContext context) =>
+      Column(mainAxisSize: MainAxisSize.min, children: [
+        SizedBox(
+            height: height,
             child: ch.PieChart<String>(_create(),
                 animate: true,
                 defaultRenderer: ch.ArcRendererConfig(arcRendererDecorators: [
@@ -49,5 +55,5 @@ class NameNumPieChartSample extends StatelessWidget {
                     .data
                     .map((data) => LegendItem(data))
                     .toList()))
-      ]));
+      ]);
 }

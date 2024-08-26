@@ -36,7 +36,8 @@ class _CountPageState extends State<CountPage> {
               _buildColorCount(),
               const SizedBox(height: 32),
               _buildNameNumCountTitle(),
-              _buildNameNumCount()
+              _buildNameNumCount(),
+              const SizedBox(height: 64),
             ]),
           )));
 
