@@ -40,5 +40,6 @@ class CountPageViewModel extends ChangeNotifier {
     for (var e in _subProjects) {
       _countNum = _countNum + safeInt(e.count);
     }
+    notifyListeners();
   }
 }

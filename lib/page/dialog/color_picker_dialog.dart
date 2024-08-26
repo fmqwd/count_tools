@@ -25,12 +25,6 @@ class ColorPickerDialogState extends State<ColorPickerDialog>
     currentColor = widget.initialColor;
   }
 
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
   void onColorChanged(Color color) => setState(() {
         currentColor = color;
         notifyListeners();

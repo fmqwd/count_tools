@@ -28,7 +28,7 @@ class ColorPieChartWidget extends StatelessWidget {
                     e.value,
                   ))
               .toList(),
-          labelAccessorFn: (sa, _) => '${sa.percent.toStringAsFixed(2)}%',
+          labelAccessorFn: (s, _) => '${s.percent.toStringAsFixed(2)}%',
           insideLabelStyleAccessorFn: (s, _) => ch.TextStyleSpec(
               color: ch.ColorUtil.fromDartColor(getTextColor(s.color))),
         )
@@ -52,7 +52,7 @@ class ColorPieChartWidget extends StatelessWidget {
                 alignment: WrapAlignment.center,
                 children: (_create()
                     .first
-                    .data..sort((a, b) => a.count.compareTo(b.count)))
+                    .data..sort((b, a) => a.count.compareTo(b.count)))
                     .map((data) => LegendItem(data))
                     .toList()))
       ]);

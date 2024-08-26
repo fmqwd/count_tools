@@ -21,7 +21,7 @@ class LongClickSubProjectDialog extends StatefulWidget {
 
 class LongClickSubProjectDialogState extends State<LongClickSubProjectDialog> {
   Color selectedColor = Colors.blue;
-  Color selectedTextColor = Colors.black;
+  Color selectedTextColor = Colors.white;
 
   @override
   void initState() {

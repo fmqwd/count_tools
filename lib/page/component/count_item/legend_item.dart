@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class LegendItem extends StatelessWidget {
   final CountItemData data;
+  final bool isShowCount;
 
-  const LegendItem(this.data, {super.key});
+  const LegendItem(this.data, {super.key, this.isShowCount = false});
 
   @override
   Widget build(BuildContext context) =>
@@ -16,8 +17,12 @@ class LegendItem extends StatelessWidget {
           width: 16,
           height: 16,
         ),
-        const SizedBox(width: 8),
-        Text('${data.name} (${data.percent.toStringAsFixed(2)}%)'),
+        const SizedBox(width: 4),
+        Row(children: [
+          Text(data.name),
+          if (isShowCount) Text('：${data.count}-'),
+          Text('(${data.percent.toStringAsFixed(2)}%)'),
+        ]),
         const SizedBox(width: 16)
       ]);
 }

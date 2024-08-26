@@ -62,6 +62,6 @@ class _CountPageState extends State<CountPage> {
         if (vm.countNum < 1) {
           return const Center(child: Text("暂无详细数据，请先添加"));
         }
-        return NameNumPieChartSample(vm.subProjects, vm.countNum, height: 400);
+        return NameNumPieChartWidget(vm.subProjects, vm.countNum, height: 400);
       });
 }

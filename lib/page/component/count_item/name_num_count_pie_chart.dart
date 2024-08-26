@@ -6,29 +6,30 @@ import 'package:charts_flutter/flutter.dart' as ch;
 
 import 'legend_item.dart';
 
-class NameNumPieChartSample extends StatelessWidget {
+class NameNumPieChartWidget extends StatelessWidget {
   final List<SubProjectData> data;
   final int count;
   final double? height;
 
-  const NameNumPieChartSample(this.data, this.count, {Key? key, this.height})
+  const NameNumPieChartWidget(this.data, this.count, {Key? key, this.height})
       : super(key: key);
 
   List<ch.Series<CountItemData, String>> _create() => [
         ch.Series(
           id: 'PieChart',
           measureFn: (s, _) => safeInt(s.count),
-          domainFn: (s, _) => s.color.toString(),
+          domainFn: (s, _) => s.name,
           colorFn: (s, _) => ch.ColorUtil.fromDartColor(s.color),
-          data: (data
+          data: data
               .map((e) => CountItemData(
                     parseColor(e.color),
                     e.name,
                     (safeInt(e.count) / count) * 100,
                     safeInt(e.count),
                   ))
-              .toList()),
-          labelAccessorFn: (s, _) => '${s.percent.toStringAsFixed(2)}%',
+              .toList(),
+          labelAccessorFn: (s, _) =>
+              '${s.name}-${s.percent.toStringAsFixed(2)}%',
           insideLabelStyleAccessorFn: (s, _) => ch.TextStyleSpec(
               color: ch.ColorUtil.fromDartColor(getTextColor(s.color))),
         )
@@ -50,10 +51,10 @@ class NameNumPieChartSample extends StatelessWidget {
             margin: const EdgeInsets.symmetric(horizontal: 32),
             child: Wrap(
                 alignment: WrapAlignment.center,
-                children: _create()
+                children: (_create()
                     .first
-                    .data
-                    .map((data) => LegendItem(data))
+                    .data..sort((b, a) => a.count.compareTo(b.count)))
+                    .map((data) => LegendItem(data, isShowCount: true))
                     .toList()))
       ]);
 }
