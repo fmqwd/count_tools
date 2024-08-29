@@ -38,7 +38,7 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
     priceCon.text = '0';
     countCon.text = '1';
     eventCon.text = '';
-    typeCon.text = '';
+    typeCon.text = '带签';
     _vm = SubProjectInfoViewModel()..loadItems(widget.parentData.id);
   }
 
@@ -89,7 +89,9 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
                         minTime: DateTime(2000, 1, 1),
                         maxTime: DateTime(2100, 12, 31),
                         onConfirm: (date) => dateCon.text = formatDate(date),
-                        currentTime: DateTime.now(),
+                        currentTime: dateCon.text.isEmpty
+                            ? DateTime.now()
+                            : DateTime.parse(dateCon.text),
                         locale: LocaleType.zh),
                     child: const Icon(Icons.calendar_month)))),
         TextField(
@@ -99,8 +101,15 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
         TextField(
             controller: priceCon,
             keyboardType: TextInputType.number,
-            decoration: const InputDecoration(
-                labelText: "请输入单张价格（可选）", suffixIcon: Icon(Icons.money))),
+            decoration: InputDecoration(
+                labelText: "请输入单张价格（可选）",
+                suffix: Row(mainAxisSize: MainAxisSize.min, children: [
+                  _buildEditBtn('60', priceCon),
+                  _buildEditBtn('80', priceCon),
+                  _buildEditBtn('100', priceCon),
+                  _buildEditBtn('120', priceCon),
+                ]),
+                suffixIcon: const Icon(Icons.money))),
         TextField(
             controller: countCon,
             keyboardType: TextInputType.number,
@@ -108,8 +117,15 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
                 labelText: "请输入张数（必填）", suffixIcon: Icon(Icons.numbers))),
         TextField(
             controller: typeCon,
-            decoration: const InputDecoration(
-                labelText: "请输入类型（有无签、宿题等）（可选）", suffixIcon: Icon(Icons.type_specimen_outlined))),
+            decoration: InputDecoration(
+                labelText: "请输入类型（有无签、宿题等）（可选）",
+                suffix: Row(mainAxisSize: MainAxisSize.min, children: [
+                  _buildEditBtn('带签', typeCon),
+                  _buildEditBtn('无签', typeCon),
+                  _buildEditBtn('宿题', typeCon),
+                  _buildEditBtn('主题', typeCon),
+                ]),
+                suffixIcon: const Icon(Icons.type_specimen_outlined))),
         const SizedBox(height: 30)
       ]));
 
@@ -156,4 +172,19 @@ class _SubProjectInfoPageState extends State<SubProjectInfoPage> {
               itemBuilder: (context, index) => SingleItemWidget(
                   date: vm.dates[index],
                   data: vm.items.where((e) => e.date == vm.dates[index]).toList()))));
+
+  Widget _buildEditBtn(String text, TextEditingController con) =>
+      Container(
+        alignment: Alignment.center,
+        width: 30,
+        height: 20,
+        margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        decoration: BoxDecoration(
+            color: const Color(0xFFF5F5F5),
+            borderRadius: BorderRadius.circular(3),
+            border: Border.all(color: const Color(0xFFE5E5E5))),
+        child: GestureDetector(
+            onTap: () => con.text = text,
+            child: FittedBox(fit: BoxFit.contain, child: Text(text))),
+      );
 }

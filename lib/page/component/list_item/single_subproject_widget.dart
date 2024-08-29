@@ -53,11 +53,15 @@ class SingleSubProjectWidget extends StatelessWidget {
                       bottomLeft: Radius.circular(12),
                       bottomRight: Radius.circular(12),
                     )),
-                child: Text(name,
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(name,
                     style: AppTextStyle.customStyle(
                         size: width / 6.5,
                         color: textColor,
-                        fontWeight: FontWeight.normal)),
+                        fontWeight: FontWeight.normal),
+                  ),
+                ),
               ),
             ],
           ),
