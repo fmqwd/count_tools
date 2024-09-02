@@ -33,7 +33,10 @@ class _HomePageState extends State<HomePage> {
           appBar: AppBar(title: Text(widget.title), actions: [
             IconButton(
                 icon: const Icon(Icons.settings),
-                onPressed: () => _vm.pushSetPage(context))
+                onPressed: () => _vm.pushSetPage(context)),
+            IconButton(
+                icon: const Icon(Icons.integration_instructions_outlined),
+                onPressed: () => _vm.pushToolPage(context)),
           ]),
           body: Center(child: _buildHomePageProjectList()),
           floatingActionButton: Builder(
