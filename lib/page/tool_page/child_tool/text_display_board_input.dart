@@ -2,6 +2,8 @@
 
 import 'package:count_tools/page/component/toggle_button.dart';
 import 'package:count_tools/page/dialog/color_picker_dialog.dart';
+import 'package:count_tools/page/tool_page/child_tool/text_display_board_show.dart';
+import 'package:count_tools/utils/route_utils.dart';
 import 'package:flutter/material.dart';
 
 class TextDisplayBoard extends StatefulWidget {
@@ -12,7 +14,7 @@ class TextDisplayBoard extends StatefulWidget {
 }
 
 class _TextDisplayBoardState extends State<TextDisplayBoard> {
-  double _currentSpeed = 9;
+  double _currentSpeed = 10;
   double _currentSliderValue = 30;
   final _controller = TextEditingController();
   final ValueNotifier<bool> _isScroll = ValueNotifier<bool>(false);
@@ -25,9 +27,7 @@ class _TextDisplayBoardState extends State<TextDisplayBoard> {
         body: _buildBody(),
         floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.check),
-          onPressed: () {
-
-          },
+          onPressed: () => pushToShowPage(),
         ),
       );
 
@@ -156,9 +156,9 @@ class _TextDisplayBoardState extends State<TextDisplayBoard> {
                   const Text('滚动速度'),
                   Slider(
                       value: _currentSpeed,
-                      min: 6,
-                      max: 18,
-                      divisions: 9,
+                      min: 1,
+                      max: 100,
+                      divisions: 50,
                       label: _currentSpeed.toStringAsFixed(1),
                       onChanged: (s) => setState(() => _currentSpeed = s))
                 ]),
@@ -167,4 +167,12 @@ class _TextDisplayBoardState extends State<TextDisplayBoard> {
   void pushToColorPicker(Color color, ValueNotifier<Color> colorResult) =>
       showColorPicker(context, color, (c) => colorResult.value = c);
 
+  void pushToShowPage() => RouteUtils.pushAnim(
+      context,
+      TextDisplayBoardShowPage(
+          text: _controller.text,
+          backColor: _backColor.value,
+          textColor: _textColor.value,
+          textSize: _currentSliderValue,
+          speed: _isScroll.value ? _currentSpeed : null));
 }

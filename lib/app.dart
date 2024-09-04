@@ -1,6 +1,8 @@
 import 'package:count_tools/page/home_page/home_page.dart';
 import 'package:count_tools/utils/setting_utils.dart';
+import 'package:count_tools/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 
 class App extends StatefulWidget {
@@ -16,6 +18,7 @@ class AppState extends State<App> {
   @override
   void initState() {
     super.initState();
+    setScreenOrientation(false);
     _initApp();
     _loadThemeColor();
   }

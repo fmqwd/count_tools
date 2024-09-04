@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 /// 解析字符串颜色
 /// 支持格式：
@@ -72,3 +73,14 @@ Color getTextColor(Color color) =>
             128
         ? Colors.black
         : Colors.white;
+
+//设置屏幕方向
+void setScreenOrientation(bool isLandscape) {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (isLandscape) {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.landscapeLeft]);
+  } else {
+    SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  }
+}
+
