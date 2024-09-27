@@ -71,6 +71,20 @@ class DatabaseHelper {
         ext TEXT
       )
     """);
+    await db.execute("""
+      CREATE TABLE activity_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        desc TEXT,
+        date TEXT NOT NULL,
+        time ,
+        address TEXT,
+        price TEXT,
+        chikaNum TEXT,
+        peopleNum TEXT,
+        ext TEXT
+      )
+    """);
   }
 
   Future<void> close() async {
