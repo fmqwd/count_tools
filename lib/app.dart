@@ -2,7 +2,7 @@ import 'package:count_tools/page/home_page/home_page.dart';
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'data/request/group_request.dart';
 
 
 class App extends StatefulWidget {
@@ -30,6 +30,15 @@ class AppState extends State<App> {
 
 
   Future<void> _initApp() async {
+    _initShared();
+    _initData();
+  }
+
+  Future<void> _initData() async {
+    GroupRest().fetchGroups();
+  }
+
+  Future<void> _initShared() async {
     if (!await SettingUtils.isNotFirstEnter()) {
       await SettingUtils.setIsNotFirstEnter();
       SettingUtils.setProjectInfoRowNum(5);
@@ -38,6 +47,7 @@ class AppState extends State<App> {
       SettingUtils.setIsShowTotalPrice(true);
     }
   }
+
 
   @override
   Widget build(BuildContext context) => MaterialApp(

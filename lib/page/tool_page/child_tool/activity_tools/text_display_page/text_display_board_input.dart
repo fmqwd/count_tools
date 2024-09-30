@@ -2,7 +2,7 @@
 
 import 'package:count_tools/page/component/toggle_button.dart';
 import 'package:count_tools/page/dialog/color_picker_dialog.dart';
-import 'package:count_tools/page/tool_page/child_tool/text_display_board_show.dart';
+import 'package:count_tools/page/tool_page/child_tool/activity_tools/text_display_page/text_display_board_show.dart';
 import 'package:count_tools/utils/route_utils.dart';
 import 'package:flutter/material.dart';
 

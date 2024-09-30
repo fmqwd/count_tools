@@ -49,10 +49,6 @@ class ActivityDBHelper {
 
   Future<void> delete(int id) async {
     final db = await _dbHelper.database;
-    await db.delete(
-      'activity_data',
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    await db.delete('activity_data', where: 'id = ?', whereArgs: [id]);
   }
 }

@@ -85,6 +85,18 @@ class DatabaseHelper {
         ext TEXT
       )
     """);
+    await db.execute("""
+      CREATE TABLE group_data (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        avatar_url TEXT,
+        description TEXT,
+        name TEXT,
+        location TEXT,
+        extra_info TEXT,
+        members TEXT,
+        social_media_list TEXT
+        )
+        """);
   }
 
   Future<void> close() async {

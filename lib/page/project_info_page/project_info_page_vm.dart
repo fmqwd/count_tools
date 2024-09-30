@@ -57,8 +57,8 @@ class ProjectInfoViewModel extends ChangeNotifier {
   }
 
   Future<void> loadRanking() async {
-    List<int> nums = _subProjects.map((e) => safeInt(e.count)).toList();
-    _ranking = getRanks(nums).map((e) => e.toString()).toList();
+    List<int> numbs = _subProjects.map((e) => safeInt(e.count)).toList();
+    _ranking = getRanks(numbs).map((e) => e.toString()).toList();
   }
 
   Future<void> addSubProject(data, parentData) async {
@@ -112,7 +112,7 @@ class ProjectInfoViewModel extends ChangeNotifier {
             .compareTo(safeInt(isDesc ? a.count : b.count)));
 
   pushToSubProjectPage(BuildContext context, SubProjectData data, String id) =>
-      RouteUtils.pushAnim(context, SubProjectInfoPage(parentData: data, projectId: id));
+      RouteUtils.openForResult(context, SubProjectInfoPage(parentData: data, projectId: id)).then((value) => loadSubProjects());
 
   pushToCountPage(BuildContext context, String id) =>
       RouteUtils.pushAnim(context, CountPage(id: id));

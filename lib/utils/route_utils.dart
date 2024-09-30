@@ -40,35 +40,40 @@ class RouteUtils {
     bool removeUntil = false, // 是否移除当前页面直到指定页面
     RoutePredicate? predicate, // 路由移除的条件
   }) {
-    // 创建自定义的过渡效果
-    var pageRouteBuilder = PageRouteBuilder(
-      pageBuilder: (context, animation, secondaryAnimation) => page,
-      transitionsBuilder: (context, animation, secondaryAnimation, child) {
-
-        // 定义过渡的起始和结束位置
-        const begin = Offset(1.0, 0.0); // 从右侧进入
-        const end = Offset.zero; // 结束于当前位置
-        const curve = Curves.easeInOut; // 过渡曲线
-
-        // 使用 Tween 定义动画效果
-        var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-
-        var offsetAnimation = animation.drive(tween);
-
-        return SlideTransition(
-          position: offsetAnimation,
-          child: child,
-        );
-      },
-    );
-
     push(context, page,
-        pageRouteBuilder: pageRouteBuilder,
+        pageRouteBuilder: defaultPageRouteBuilder(page),
         replace: replace,
         removeUntil: removeUntil,
         predicate: predicate);
   }
 
+  /// 打开一个页面并等待其返回结果
+  static Future<T?> openForResult<T>(
+      BuildContext context,
+      Widget page, {
+        PageRouteBuilder? pageRouteBuilder, // 自定义构建器
+        bool replace = false, // 是否替换当前页面
+        bool removeUntil = false, // 是否移除当前页面直到指定页面
+        RoutePredicate? predicate, // 路由移除的条件
+      }) async {
+    if (replace) {
+      return Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => page),
+      ).then((value) => value as T?);
+    } else if (removeUntil) {
+      return Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+          predicate ?? (route) => false)
+          .then((value) => value as T?);
+    } else {
+      return Navigator.push(
+        context,
+        pageRouteBuilder ?? defaultPageRouteBuilder(page),
+      ).then((value) => value as T?);
+    }
+  }
   /// 打开URL
   static Future<void> launchURL(String url) async {
     try {
@@ -78,4 +83,14 @@ class RouteUtils {
       Log.e('RouteUtils', 'Error launching URL: $e');
     }
   }
+
+  /// 默认的PageRouteBuilder
+  static PageRouteBuilder defaultPageRouteBuilder(Widget page) => PageRouteBuilder(
+      pageBuilder: (context, animation, secondaryAnimation) => page,
+      transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+          SlideTransition(
+              position: animation.drive(
+                  Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                      .chain(CurveTween(curve: Curves.easeInOut))),
+              child: child));
 }

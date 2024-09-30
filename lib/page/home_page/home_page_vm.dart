@@ -45,7 +45,7 @@ class HomePageViewModel extends ChangeNotifier {
 
   // 跳转项目详情
   pushProjectInfoPage(BuildContext context, ProjectData data) =>
-      RouteUtils.pushAnim(context, ProjectInfoPage(parentData: data));
+      RouteUtils.openForResult(context, ProjectInfoPage(parentData: data)).then((value) => loadProjects());
 
   // 跳转设置页
   pushSetPage(BuildContext context) =>
