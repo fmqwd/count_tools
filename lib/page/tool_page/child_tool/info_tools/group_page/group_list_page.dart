@@ -37,26 +37,23 @@ class _GroupListPageState extends State<GroupListPage> {
       ));
 
   Widget _buildPageBody() => Container(
-        alignment: Alignment.center,
-        width: double.infinity,
-        child:
-            ListView(children: [const SizedBox(height: 20), _buildGroupList()]),
-      );
+      alignment: Alignment.center,
+      width: double.infinity,
+      child: ListView(children: [const SizedBox(height: 20), _buildList()]));
 
-  Widget _buildGroupList() =>
+  Widget _buildList() =>
       Consumer<GroupListPageViewModel>(builder: (context, vm, _) {
         if (vm.groupList.isEmpty) {
           return const Center(child: Text('暂无数据'));
         } else {
           int count = vm.groupList.length;
           return SizedBox(
-              height: count * 100,
+              height: count * 182,
               child: NonePaddingWidget(
                 context: context,
                 child: ListView.builder(
                     itemCount: count,
-                    itemBuilder: (context, index) =>
-                        SingleGroupItem(data: vm.groupList[index])),
+                    itemBuilder: (context, index) => SingleGroupItem(data: vm.groupList[index])),
               ));
         }
       });

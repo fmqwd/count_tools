@@ -1,4 +1,3 @@
-import 'package:count_tools/data/model/activity_data.dart';
 import 'package:count_tools/page/component/list_item/single_activity_item.dart';
 import 'package:count_tools/page/custom_widget/remove_padding_widget.dart';
 import 'package:flutter/material.dart';
@@ -51,8 +50,9 @@ class _ActivityListPageState extends State<ActivityListPage> {
             child: NonePaddingWidget(
                 context: context,
                 child: ListView.builder(
-                    itemCount: count,
-                    itemBuilder: (context, index) => SingleActivityItem(
-                        data: vm.activityData[index], onClick: () => {}))));
+                  itemCount: count,
+                  itemBuilder: (context, index) => SingleActivityItem(
+                      data: vm.activityData[index], onClick: () => {}),
+                )));
       });
 }

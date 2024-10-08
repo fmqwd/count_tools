@@ -1,6 +1,3 @@
-import 'package:count_tools/data/model/social_media_data.dart';
-import 'member_data.dart';
-
 class GroupData {
   late String _id;
   late String _name;
