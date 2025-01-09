@@ -1,7 +1,8 @@
 import 'package:count_tools/utils/setting_utils.dart';
 import 'package:flutter/material.dart';
 
-void showProjectInfoSettingDialog(BuildContext context, void Function() callback) async {
+void showProjectInfoSettingDialog(
+    BuildContext context, void Function() callback) async {
   final settings = await _loadSettings();
   if (context.mounted) {
     showDialog(
@@ -34,7 +35,18 @@ class SettingDialog extends StatefulWidget {
 class SettingDialogState extends State<SettingDialog> {
   final List<int> rowOptions = [2, 3, 4, 5, 6, 7];
   final List<String> orderOptions = ['升序', '降序'];
-  final List<String> displayOptions = ['数量-百分比', '排名-百分比', '排名-数量', '仅排名', '仅百分比', '仅数量'];
+  final List<String> displayOptions = [
+    '数量-百分比',
+    '排名-百分比',
+    '排名-数量',
+    '花费-百分比',
+    '花费-排名',
+    '花费-数量',
+    '仅排名',
+    '仅百分比',
+    '仅数量',
+    '仅花费',
+  ];
 
   Map<String, dynamic> settings = {};
 

@@ -121,6 +121,13 @@ class SettingUtils {
   static Future<bool> getIsAutoUpdate() async =>
       await SharedUtils.getBool("isAutoUpdate");
 
+  //获取倒数日的置顶id
+  static Future<String> getCountDownTimeTopId() async =>
+      await SharedUtils.getString("lastDayTopId");
+
+  //设置倒数日的置顶id
+  static Future<void> setCountDownTimeTopId(String id) async =>
+      await SharedUtils.setString("lastDayTopId", id);
 }
 
 Widget getThemeColorWidget() => FutureBuilder<Widget>(

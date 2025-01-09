@@ -28,7 +28,7 @@ class _CountPageState extends State<CountPage> {
       value: _vm,
       child: Scaffold(
           appBar: AppBar(title: const Text("统计"), actions: [
-            IconButton(onPressed: () => {}, icon: const Icon(Icons.settings))
+            IconButton(onPressed: () => _vm.pushAnnualStatisticsPage(context), icon: const Icon(Icons.add_chart))
           ]),
           body: Center(
             child: ListView(children: [

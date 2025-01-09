@@ -71,32 +71,6 @@ class DatabaseHelper {
         ext TEXT
       )
     """);
-    await db.execute("""
-      CREATE TABLE activity_data (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT NOT NULL,
-        desc TEXT,
-        date TEXT NOT NULL,
-        time ,
-        address TEXT,
-        price TEXT,
-        chikaNum TEXT,
-        peopleNum TEXT,
-        ext TEXT
-      )
-    """);
-    await db.execute("""
-      CREATE TABLE group_data (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        avatar_url TEXT,
-        description TEXT,
-        name TEXT,
-        location TEXT,
-        extra_info TEXT,
-        members TEXT,
-        social_media_list TEXT
-        )
-        """);
   }
 
   Future<void> close() async {

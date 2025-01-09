@@ -7,7 +7,7 @@ import 'package:count_tools/page/dialog/del_project_dialog.dart';
 import 'package:count_tools/page/dialog/edit_project_dialog.dart';
 import 'package:count_tools/page/project_info_page/project_info_page.dart';
 import 'package:count_tools/page/setting_page/setting_page.dart';
-import 'package:count_tools/page/tool_page/tool_page.dart';
+import 'package:count_tools/page/tool_page/child_tool/activity_tools/text_display_page/text_display_board_input.dart';
 import 'package:count_tools/utils/route_utils.dart';
 import 'package:flutter/material.dart';
 
@@ -51,9 +51,9 @@ class HomePageViewModel extends ChangeNotifier {
   pushSetPage(BuildContext context) =>
       RouteUtils.pushAnim(context, const SettingPage());
 
-  // 跳转工具页
+  // 跳转文字灯牌
   pushToolPage(BuildContext context) =>
-      RouteUtils.pushAnim(context, const ToolsPage());
+      RouteUtils.pushAnim(context, const TextDisplayBoard());
 
   // 跳转添加项目弹窗
   addProjectDialog(BuildContext context) => showDialog(

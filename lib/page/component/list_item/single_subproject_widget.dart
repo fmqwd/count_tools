@@ -82,6 +82,9 @@ class SingleSubProjectWidget extends StatelessWidget {
         return _rankPercent();
       case '排名-数量':
         return _rankNum();
+      case '花费-百分比':
+      case '花费-排名':
+
       default:
         return _numPercent();
     }

@@ -1,5 +1,7 @@
 import 'package:count_tools/data/database/helper/sub_project_helper.dart';
 import 'package:count_tools/data/model/sub_project_data.dart';
+import 'package:count_tools/page/count_page/annual_statistics/annual_statistics_page.dart';
+import 'package:count_tools/utils/route_utils.dart';
 import 'package:count_tools/utils/safe_utils.dart';
 import 'package:count_tools/utils/ui_utils.dart';
 import 'package:flutter/material.dart';
@@ -42,4 +44,8 @@ class CountPageViewModel extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  // 跳转年度统计页面
+  pushAnnualStatisticsPage(BuildContext context) =>
+      RouteUtils.pushAnim(context, const AnnualStatisticsPage());
 }
